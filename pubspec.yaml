@@ -19,6 +19,7 @@ dependencies:
   shared_preferences: ^2.2.2  # Guardar sesión localmente
   flutter_secure_storage: ^9.0.0  # Almacenar datos sensibles
   crypto: ^3.0.6 #Cifrar datos
+  flutter_dotenv: ^5.0.2
 
   # 📍 Mapas y Ubicación
   google_maps_flutter: ^2.5.0  # Google Maps para mostrar vehículos
@@ -29,7 +30,6 @@ dependencies:
   dio: ^5.4.1  # Manejar peticiones HTTP para subir imágenes
 
   # 📩 Chat en tiempo real (Usando Supabase Realtime)
-  supabase_realtime: ^1.0.2  # Escuchar eventos en tiempo real (chat, notificaciones)
 
   # 💳 Pagos en la app
   flutter_stripe: ^9.4.0  # Integrar pagos con Stripe
@@ -48,3 +48,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - .env

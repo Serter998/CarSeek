@@ -1,6 +1,10 @@
+import 'package:car_seek/supabase_config.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+void main() async {
+  await dotenv.load();
+  await SupabaseConfig.init();
   runApp(const MainApp());
 }
 
