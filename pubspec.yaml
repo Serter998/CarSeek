@@ -9,6 +9,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  provider: ^6.1.4
+  get_it: ^8.0.3
+  #Programación funcional
+  dartz: ^0.10.1
   # 🔗 Conexión con Supabase (Base de Datos y Autenticación)
   supabase_flutter: ^2.8.4  # Cliente de Supabase para Flutter
 
