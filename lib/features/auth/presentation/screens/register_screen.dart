@@ -11,23 +11,40 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          InputText(isPassword: false, placeholder: "Introduzca su correo*"),
-          InputText(isPassword: true, placeholder: "Introduzca su contraseña*"),
-          InputText(isPassword: true, placeholder: "Confirmar contraseña*"),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RedirectTextButton(function: () {
-                context.read<AuthBloc>().add(OnNavigateToLoginEvent());
-              }, text: "¿Ya tienes una cuenta? Inicia sesión"),
-            ],
-          ),
-          ActionButton(function: null, text: "Registrarse"),
-        ],
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text("Crear una cuenta", style: Theme.of(context).textTheme.headlineSmall),
+            const SizedBox(height: 20),
+            InputText(isPassword: false, placeholder: "Introduzca su nombre*"),
+            InputText(isPassword: false, placeholder: "Introduzca su correo*"),
+            InputText(isPassword: true, placeholder: "Introduzca su contraseña*"),
+            InputText(isPassword: true, placeholder: "Confirmar contraseña*"),
+            InputText(isPassword: false, placeholder: "Teléfono (opcional)"),
+            InputText(isPassword: false, placeholder: "Ubicación (opcional)"),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RedirectTextButton(
+                  function: () {
+                    context.read<AuthBloc>().add(OnNavigateToLoginEvent());
+                  },
+                  text: "¿Ya tienes una cuenta? Inicia sesión",
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Center(
+              child: ActionButton(
+                function: null,
+                text: "Registrarse",
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

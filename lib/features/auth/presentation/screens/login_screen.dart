@@ -15,7 +15,7 @@ class LoginScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          InputText(isPassword: false, placeholder: "Introduzca su gmail*"),
+          InputText(isPassword: false, placeholder: "Introduzca su correo*"),
           InputText(isPassword: true, placeholder: "Introduzca su contraseña*"),
           Row(mainAxisAlignment: MainAxisAlignment.center,
             children: [

@@ -12,7 +12,17 @@ class AuthScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Inicio de sesión", style: TextStyle(),),),
+      appBar: AppBar(
+        title: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            if (state is AuthRegister) {
+              return const Text("Registro");
+            } else {
+              return const Text("Inicio de sesión");
+            }
+          },
+        ),
+      ),
       body: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           switch (state) {
