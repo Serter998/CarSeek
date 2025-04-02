@@ -2,7 +2,7 @@ import 'package:car_seek/core/errors/failures.dart';
 import 'package:car_seek/features/auth/domain/use_cases/login_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/register_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:car_seek/features/auth/domain/entities/user.dart';
+import 'package:car_seek/share/domain/entities/usuario.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -15,7 +15,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<OnRegisterEvent>((event, emit) async {
       emit(AuthLoading());
 
-      final resp = await _registerUseCase(event.email, event.password);
+      final resp = await _registerUseCase(event.email, event.password, event.nombre, event.telefono, event.ubicacion);
 
       resp.fold(
             (f) => emit(AuthError(failure: f)),

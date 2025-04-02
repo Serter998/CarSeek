@@ -1,36 +1,57 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:car_seek/features/auth/data/models/user_model.dart';
+import 'package:car_seek/share/data/models/usuario_model.dart';
 
 abstract class AuthSource {
-  Future<UserModel> register(String email, String password);
-  Future<UserModel> login(String email, String password);
+  Future<AuthResponse> register(String email, String password);
+  Future<AuthResponse> login(String email, String password);
+  Future<void> cerrarSesion();
+  User? getCurrentUser();
 }
 
 class AuthSourceImpl implements AuthSource {
+  final String _apiKey;
 
-  final String apiKey;
+  AuthSourceImpl(this._apiKey);
 
-  AuthSourceImpl(this.apiKey);
-
-  void authenticate() {
+  /*void authenticate() {
     print("Using API key: $apiKey");
+  }*/
+
+  final SupabaseClient supabaseClient = SupabaseClient(
+      dotenv.env['SUPABASE_URL']!, dotenv.env['SUPABASE_KEY']!);
+
+  Future<AuthResponse> register(String email, String password) async {
+    try {
+      final response = await supabaseClient.auth.signUp(
+          email: email, password: password);
+      return response;
+    } catch (e) {
+      throw Exception("Error en el registro: ${e.toString()}");
+    }
   }
 
-  final SupabaseClient supabaseClient = SupabaseClient(dotenv.env['SUPABASE_URL']!, dotenv.env['SUPABASE_KEY']!);
-
-  Future<UserModel> register(String email, String password) async {
-    final response = await supabaseClient.auth.signUp(email: email, password: password);
-
-    return UserModel(id: response.user!.id, email: email);
+  Future<AuthResponse> login(String email, String password) async {
+    try {
+      final response = await supabaseClient.auth.signInWithPassword(
+          email: email, password: password);
+      return response;
+    } catch (e) {
+      throw Exception("Error al iniciar sesión: ${e.toString()}");
+    }
   }
 
-  Future<UserModel> login(String email, String password) async {
-    final response = await supabaseClient.auth.signInWithPassword(
-      email: email,
-      password: password,
-    );
+  @override
+  User? getCurrentUser() {
+    return supabaseClient.auth.currentUser;
+  }
 
-    return UserModel(id: response.user!.id, email: email);
+  @override
+  Future<void> cerrarSesion() async {
+    try {
+      await supabaseClient.auth.signOut();
+    } catch (e) {
+      throw Exception("Error al cerrar sesión: ${e.toString()}");
+    }
   }
 }
