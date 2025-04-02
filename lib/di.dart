@@ -41,7 +41,7 @@ Future<void> init() async {
   *Inicio de Auth
   * -------------*/
   //Bloc
-  di.registerFactory(() => AuthBloc(di(), di()));
+  di.registerFactory(() => AuthBloc(di(), di(), di(), di()));
 
   //Use cases
   di.registerLazySingleton(() => LoginUseCase(repository: di()));

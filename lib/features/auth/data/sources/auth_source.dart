@@ -1,6 +1,5 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:car_seek/share/data/models/usuario_model.dart';
 
 abstract class AuthSource {
   Future<AuthResponse> register(String email, String password);
@@ -13,10 +12,6 @@ class AuthSourceImpl implements AuthSource {
   final String _apiKey;
 
   AuthSourceImpl(this._apiKey);
-
-  /*void authenticate() {
-    print("Using API key: $apiKey");
-  }*/
 
   final SupabaseClient supabaseClient = SupabaseClient(
       dotenv.env['SUPABASE_URL']!, dotenv.env['SUPABASE_KEY']!);

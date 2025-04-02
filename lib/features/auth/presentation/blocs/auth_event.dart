@@ -25,7 +25,9 @@ class OnLoginEvent extends AuthEvent {
   OnLoginEvent({required this.email, required this.password});
 }
 
-class OnGetCurrentUser extends AuthEvent {}
+class OnGetCurrentUserEvent extends AuthEvent {}
+
+class OnCerrarSesionEvent extends AuthEvent {}
 
 class OnNavigateToRegisterEvent extends AuthEvent {}
 
