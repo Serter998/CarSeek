@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark(),//Modo oscuro
-        title: "Pokemon",
+        title: "CarSeek",
         home: AuthScreen(),
       ),
     );

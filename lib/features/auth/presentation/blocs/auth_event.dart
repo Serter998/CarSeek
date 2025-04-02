@@ -13,3 +13,7 @@ class OnLoginEvent extends AuthEvent {
   final String password;
   OnLoginEvent({required this.email, required this.password});
 }
+
+class OnNavigateToRegisterEvent extends AuthEvent {}
+
+class OnNavigateToLoginEvent extends AuthEvent {}
