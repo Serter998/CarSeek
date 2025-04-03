@@ -1,5 +1,6 @@
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/widgets/action_button.dart';
+import 'package:car_seek/features/auth/presentation/widgets/password_input_text.dart';
 import 'package:car_seek/features/auth/presentation/widgets/redirect_text_button.dart';
 import 'package:car_seek/features/auth/presentation/widgets/text_fields.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +21,8 @@ class RegisterScreen extends StatelessWidget {
             const SizedBox(height: 20),
             InputText(isPassword: false, placeholder: "Introduzca su nombre*"),
             InputText(isPassword: false, placeholder: "Introduzca su correo*"),
-            InputText(isPassword: true, placeholder: "Introduzca su contraseña*"),
-            InputText(isPassword: true, placeholder: "Confirmar contraseña*"),
+            PasswordInputText(placeholder:"Introduzca su contraseña*"),
+            PasswordInputText(placeholder:"Confirmar contraseña*"),
             InputText(isPassword: false, placeholder: "Teléfono (opcional)"),
             InputText(isPassword: false, placeholder: "Ubicación (opcional)"),
             const SizedBox(height: 20),

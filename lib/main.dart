@@ -1,3 +1,4 @@
+import 'package:car_seek/core/themes/app_theme.dart';
 import 'package:car_seek/di.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/screens/auth_screen.dart';
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData.dark(),//Modo oscuro
+        theme: AppTheme(selectedColor: 0).theme(),
         title: "CarSeek",
         home: AuthScreen(),
       ),

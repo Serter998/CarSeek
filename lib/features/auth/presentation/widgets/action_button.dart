@@ -15,7 +15,19 @@ class _ActionButtonState extends State<ActionButton> {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: widget.function ?? () {},
-      child: Text(widget.text),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(
+            color: Color.fromARGB(180, 255, 255, 255),
+            width: 1.5,
+          ),
+        ),
+      ),
+      child: Text(widget.text, style: const TextStyle(fontSize: 16)),
     );
   }
 }
