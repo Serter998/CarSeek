@@ -17,8 +17,15 @@ class AuthScreen extends StatelessWidget {
           builder: (context, state) {
             if (state is AuthRegister) {
               return const Text("Registro");
-            } else {
+            } else if (state is AuthInitial) {
               return const Text("Inicio de sesión");
+            } else if (state is AuthSuccess) {
+              return const Text("Acceso exitoso");
+            } else if (state is AuthError) {
+              return const Text("Error");
+            }
+            else {
+              return const Text("Cargando");
             }
           },
         ),

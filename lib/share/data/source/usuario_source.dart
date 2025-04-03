@@ -20,7 +20,10 @@ class UsuarioSourceImpl implements UsuarioSource {
   UsuarioSourceImpl(this._apiKey);
 
   final SupabaseClient supabaseClient = SupabaseClient(
-      dotenv.env['SUPABASE_URL']!, dotenv.env['SUPABASE_KEY']!);
+    dotenv.env['SUPABASE_URL']!,
+    dotenv.env['SUPABASE_KEY']!,
+    authOptions: const AuthClientOptions(authFlowType: AuthFlowType.implicit),
+  );
 
   @override
   Future<void> createUser(UsuarioModel usuario) async {
@@ -35,6 +38,7 @@ class UsuarioSourceImpl implements UsuarioSource {
   Future<void> deleteUser(String id) async {
     try {
       await supabaseClient.from('usuarios').delete().eq('id_usuario', id);
+      await supabaseClient.auth.admin.deleteUser(id);
     } catch (e) {
       throw Exception("Error al borrar el usuario: ${e.toString()}");
     }
@@ -77,7 +81,7 @@ class UsuarioSourceImpl implements UsuarioSource {
           .update(usuario.toJson())
           .eq('id_usuario', usuario.id);
     } catch (e) {
-      throw Exception("Error al crear el usuario: ${e.toString()}");
+      throw Exception("Error al actualizar el usuario: ${e.toString()}");
     }
   }
 }

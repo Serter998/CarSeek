@@ -7,7 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
+
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +19,8 @@ class LoginScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          InputText(isPassword: false, placeholder: "Introduzca su correo*"),
-          PasswordInputText(placeholder: "Introduzca su contraseña*"),
+          InputText(placeholder: "Introduzca su correo*", controller: emailController,),
+          PasswordInputText(placeholder: "Introduzca su contraseña*", controller: passwordController,),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -30,7 +33,19 @@ class LoginScreen extends StatelessWidget {
               ),
             ],
           ),
-          ActionButton(function: null, text: "Iniciar sesión"),
+          ActionButton(function: () {
+            final email = emailController.text.trim();
+            final password = passwordController.text.trim();
+
+            if(email.isNotEmpty && password.isNotEmpty) {
+              context.read<AuthBloc>().add(
+                  OnLoginEvent(email: email, password: password));
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Por favor, ingrese su correo y contraseña"))
+              );
+            }
+          }, text: "Iniciar sesión"),
         ],
       ),
     );

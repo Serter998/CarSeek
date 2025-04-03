@@ -3,8 +3,11 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class AuthSource {
   Future<AuthResponse> register(String email, String password);
+
   Future<AuthResponse> login(String email, String password);
+
   Future<void> cerrarSesion();
+
   User? getCurrentUser();
 }
 
@@ -14,22 +17,31 @@ class AuthSourceImpl implements AuthSource {
   AuthSourceImpl(this._apiKey);
 
   final SupabaseClient supabaseClient = SupabaseClient(
-      dotenv.env['SUPABASE_URL']!, dotenv.env['SUPABASE_KEY']!);
+    dotenv.env['SUPABASE_URL']!,
+    dotenv.env['SUPABASE_KEY']!,
+    authOptions: const AuthClientOptions(authFlowType: AuthFlowType.implicit),
+  );
 
+  @override
   Future<AuthResponse> register(String email, String password) async {
     try {
       final response = await supabaseClient.auth.signUp(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
       return response;
     } catch (e) {
       throw Exception("Error en el registro: ${e.toString()}");
     }
   }
 
+  @override
   Future<AuthResponse> login(String email, String password) async {
     try {
       final response = await supabaseClient.auth.signInWithPassword(
-          email: email, password: password);
+        email: email,
+        password: password,
+      );
       return response;
     } catch (e) {
       throw Exception("Error al iniciar sesión: ${e.toString()}");

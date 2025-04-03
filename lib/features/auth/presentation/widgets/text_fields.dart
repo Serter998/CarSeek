@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class InputText extends StatefulWidget {
-  final bool isPassword;
   final String placeholder;
+  final TextEditingController? controller;
 
   const InputText({
     super.key,
-    required this.isPassword,
     required this.placeholder,
+    required this.controller,
   });
 
   @override
@@ -20,7 +20,7 @@ class _InputTextState extends State<InputText> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8, right: 8, left: 8),
       child: TextField(
-        obscureText: widget.isPassword,
+        controller: widget.controller,
         decoration: InputDecoration(
           hintText: widget.placeholder,
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),

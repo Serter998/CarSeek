@@ -30,10 +30,8 @@ class AuthRepositoryImpl implements AuthRepository {
       if (user != null) {
         final usuarioModel = UsuarioModel(
           id: user.id,
+          userId: user.id,
           nombre: nombre,
-          email: email,
-          reputacion: 0.0,
-          fechaRegistro: DateTime.now(),
           tipoUsuario: TipoUsuario.cliente,
         );
 
