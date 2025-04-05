@@ -11,6 +11,9 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<AuthBloc>().add(OnCheckUserLoginEvent());
+    });
     return Scaffold(
       appBar: AppBar(
         title: BlocBuilder<AuthBloc, AuthState>(
@@ -22,10 +25,11 @@ class AuthScreen extends StatelessWidget {
             } else if (state is AuthSuccess) {
               return const Text("Acceso exitoso");
             } else if (state is AuthError) {
-              return const Text("Error");
-            }
-            else {
+              return const Text("");
+            } else if (state is AuthLoading) {
               return const Text("Cargando");
+            } else {
+              return const Text("Estado no contemplado");
             }
           },
         ),
@@ -34,13 +38,13 @@ class AuthScreen extends StatelessWidget {
         builder: (context, state) {
           switch (state) {
             case AuthLoading():
-              return const Center(child: CircularProgressIndicator(),);
+              return const Center(child: CircularProgressIndicator());
             case AuthInitial():
               return LoginScreen();
             case AuthRegister():
               return RegisterScreen();
             case AuthError():
-              return AuthErrorScreen();
+              return AuthErrorScreen(failure: state.failure);
             case AuthSuccess():
               return AuthSuccessScreen();
           }

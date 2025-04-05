@@ -27,61 +27,41 @@ class UsuarioSourceImpl implements UsuarioSource {
 
   @override
   Future<void> createUser(UsuarioModel usuario) async {
-    try {
-      await supabaseClient.from('usuarios').insert(usuario.toJson());
-    } catch (e) {
-      throw Exception("Error al crear el usuario: ${e.toString()}");
-    }
+    await supabaseClient.from('usuarios').insert(usuario.toJson());
   }
 
   @override
   Future<void> deleteUser(String id) async {
-    try {
-      await supabaseClient.from('usuarios').delete().eq('id_usuario', id);
-      await supabaseClient.auth.admin.deleteUser(id);
-    } catch (e) {
-      throw Exception("Error al borrar el usuario: ${e.toString()}");
-    }
+    await supabaseClient.from('usuarios').delete().eq('id_usuario', id);
+    await supabaseClient.auth.admin.deleteUser(id);
   }
 
   @override
   Future<List<UsuarioModel>> getAllUsers() async {
-    try {
-      final response = await supabaseClient.from('usuarios').select();
-      return response.map((json) => UsuarioModel.fromJson(json)).toList();
-    } catch (e) {
-      throw Exception("Error al obtener usuarios: ${e.toString()}");
-    }
+    final response = await supabaseClient.from('usuarios').select();
+    return response.map((json) => UsuarioModel.fromJson(json)).toList();
   }
 
   @override
   Future<UsuarioModel?> getUserById(String id) async {
-    try {
-      final response =
-          await supabaseClient
-              .from('usuarios')
-              .select()
-              .eq('id_usuario', id)
-              .maybeSingle();
+    final response =
+        await supabaseClient
+            .from('usuarios')
+            .select()
+            .eq('id_usuario', id)
+            .maybeSingle();
 
-      if (response != null) {
-        return UsuarioModel.fromJson(response);
-      }
-      return null;
-    } catch (e) {
-      throw Exception("Error al obtener el usuario: ${e.toString()}");
+    if (response != null) {
+      return UsuarioModel.fromJson(response);
     }
+    return null;
   }
 
   @override
   Future<void> updateUser(UsuarioModel usuario) async {
-    try {
-      await supabaseClient
-          .from('usuarios')
-          .update(usuario.toJson())
-          .eq('id_usuario', usuario.id);
-    } catch (e) {
-      throw Exception("Error al actualizar el usuario: ${e.toString()}");
-    }
+    await supabaseClient
+        .from('usuarios')
+        .update(usuario.toJson())
+        .eq('id_usuario', usuario.id);
   }
 }

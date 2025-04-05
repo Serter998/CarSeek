@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 
+import 'core/constants/app_routes.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -24,6 +26,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -34,7 +38,10 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme(selectedColor: 0).theme(),
         title: "CarSeek",
-        home: AuthScreen(),
+        routes: {
+          AppRoutes.initial: (context) => const AuthScreen(),
+        },
+        initialRoute: AppRoutes.initial,
       ),
     );
   }

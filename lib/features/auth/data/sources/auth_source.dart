@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -24,28 +26,20 @@ class AuthSourceImpl implements AuthSource {
 
   @override
   Future<AuthResponse> register(String email, String password) async {
-    try {
-      final response = await supabaseClient.auth.signUp(
-        email: email,
-        password: password,
-      );
-      return response;
-    } catch (e) {
-      throw Exception("Error en el registro: ${e.toString()}");
-    }
+    final response = await supabaseClient.auth.signUp(
+      email: email,
+      password: password,
+    );
+    return response;
   }
 
   @override
   Future<AuthResponse> login(String email, String password) async {
-    try {
-      final response = await supabaseClient.auth.signInWithPassword(
-        email: email,
-        password: password,
-      );
-      return response;
-    } catch (e) {
-      throw Exception("Error al iniciar sesión: ${e.toString()}");
-    }
+    final response = await supabaseClient.auth.signInWithPassword(
+      email: email,
+      password: password,
+    );
+    return response;
   }
 
   @override
@@ -55,10 +49,6 @@ class AuthSourceImpl implements AuthSource {
 
   @override
   Future<void> cerrarSesion() async {
-    try {
-      await supabaseClient.auth.signOut();
-    } catch (e) {
-      throw Exception("Error al cerrar sesión: ${e.toString()}");
-    }
+    await supabaseClient.auth.signOut();
   }
 }

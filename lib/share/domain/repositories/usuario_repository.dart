@@ -1,4 +1,4 @@
-import 'package:car_seek/core/errors/failures.dart';
+import 'package:car_seek/core/errors/failure.dart';
 import 'package:car_seek/share/domain/entities/usuario.dart';
 import 'package:dartz/dartz.dart';
 
