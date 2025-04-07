@@ -64,11 +64,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       });
     });
 
-    on<OnCerrarSesionEvent>((event, emit) async {
+    on<OnCloseSessionEvent>((event, emit) async {
       final resp = await _cerrarSesionUseCase();
 
       resp.fold((f) => emit(AuthError(failure: f)), (r) => emit(AuthInitial()));
     });
+
 
     on<OnNavigateToRegisterEvent>((event, emit) {
       emit(AuthRegister());
@@ -76,6 +77,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<OnNavigateToLoginEvent>((event, emit) {
       emit(AuthInitial());
+    });
+
+    on<OnNavigateToForgotPasswordEvent>((event, emit) {
+      emit(AuthForgotPassword());
     });
   }
 }

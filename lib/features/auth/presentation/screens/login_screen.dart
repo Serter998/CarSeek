@@ -1,17 +1,68 @@
+import 'package:car_seek/core/services/remembered_credentials_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/widgets/action_button.dart';
 import 'package:car_seek/features/auth/presentation/widgets/custom_snack_bar.dart';
 import 'package:car_seek/features/auth/presentation/widgets/redirect_text_button.dart';
 import 'package:car_seek/features/auth/presentation/widgets/text_fields.dart';
 import 'package:car_seek/features/auth/presentation/widgets/password_input_text.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:car_seek/features/auth/presentation/widgets/remember_checkbox.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
 
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool rememberMe = false;
+  final RememberedCredentialsService _credentialsService = RememberedCredentialsService();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRememberedData();
+  }
+
+  Future<void> _loadRememberedData() async {
+    final credentials = await _credentialsService.loadCredentials();
+    final rememberedEmail = credentials['email'];
+    final rememberedPassword = credentials['password'];
+
+    if (rememberedEmail != null && rememberedPassword != null) {
+      emailController.text = rememberedEmail;
+      passwordController.text = rememberedPassword;
+      setState(() {
+        rememberMe = true;
+      });
+    }
+  }
+
+  // Manejo del login
+  Future<void> _handleLogin(BuildContext context) async {
+    final email = emailController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (email.isNotEmpty && password.isNotEmpty) {
+      if (rememberMe) {
+        await _credentialsService.saveCredentials(email, password);
+      } else {
+        await _credentialsService.deleteCredentials();
+      }
+
+      context.read<AuthBloc>().add(OnLoginEvent(email: email, password: password));
+    } else {
+      CustomSnackBar.showWarning(
+        context: context,
+        message: "Por favor, ingrese su correo y contraseña",
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,18 +79,21 @@ class LoginScreen extends StatelessWidget {
             placeholder: "Introduzca su contraseña*",
             controller: passwordController,
           ),
+          RememberMeCheckbox(
+            value: rememberMe,
+            onChanged: (value) {
+              setState(() {
+                rememberMe = value!;
+              });
+            },
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               RedirectTextButton(
-                function:
-                    () => ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          "Proximamente...",
-                        ),
-                      ),
-                    ),
+                function: () {
+                  context.read<AuthBloc>().add(OnNavigateToForgotPasswordEvent());
+                },
                 text: "¿Has olvidado tu contraseña?",
               ),
               RedirectTextButton(
@@ -52,19 +106,7 @@ class LoginScreen extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           ActionButton(
-            function: () {
-              final email = emailController.text.trim();
-              final password = passwordController.text.trim();
-
-              if (email.isNotEmpty && password.isNotEmpty) {
-                context.read<AuthBloc>().add(
-                  OnLoginEvent(email: email, password: password),
-                );
-              } else {
-                CustomSnackBar.showWarning(context: context,
-                    message: "Por favor, ingrese su correo y contraseña");
-              }
-            },
+            function: () => _handleLogin(context),
             text: "Iniciar sesión",
           ),
         ],

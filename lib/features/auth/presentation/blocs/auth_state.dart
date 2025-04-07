@@ -5,6 +5,7 @@ sealed class AuthState {}
 final class AuthInitial extends AuthState {}
 final class AuthRegister extends AuthState {}
 final class AuthLoading extends AuthState {}
+class AuthForgotPassword extends AuthState {}
 final class AuthSuccess extends AuthState {
   final Usuario user;
   AuthSuccess({required this.user});

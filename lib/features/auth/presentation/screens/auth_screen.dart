@@ -1,6 +1,7 @@
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/screens/auth_error_screen.dart';
 import 'package:car_seek/features/auth/presentation/screens/auth_success_screen.dart';
+import 'package:car_seek/features/auth/presentation/screens/forgot_password_screen.dart';
 import 'package:car_seek/features/auth/presentation/screens/login_screen.dart';
 import 'package:car_seek/features/auth/presentation/screens/register_screen.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,9 @@ class AuthScreen extends StatelessWidget {
               return const Text("Inicio de sesión");
             } else if (state is AuthSuccess) {
               return const Text("Acceso exitoso");
-            } else if (state is AuthError) {
+            } else if (state is AuthForgotPassword){
+              return const Text("Recuperar Contraseña");
+            }else if (state is AuthError) {
               return const Text("");
             } else if (state is AuthLoading) {
               return const Text("Cargando");
@@ -43,6 +46,8 @@ class AuthScreen extends StatelessWidget {
               return LoginScreen();
             case AuthRegister():
               return RegisterScreen();
+            case AuthForgotPassword():
+              return ForgotPasswordScreen();
             case AuthError():
               return AuthErrorScreen(failure: state.failure);
             case AuthSuccess():
