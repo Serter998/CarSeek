@@ -7,7 +7,7 @@ class LoadCredentialsUsecase {
 
   LoadCredentialsUsecase({required this.repository});
 
-  Future<Either<Failure, void>> call() {
+  Future<Either<Failure, Map<String, String?>>> call() {
     return repository.loadCredentials();
   }
 }

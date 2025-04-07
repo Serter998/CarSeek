@@ -11,35 +11,32 @@ import 'package:car_seek/features/auth/presentation/widgets/remember_checkbox.da
 
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final String? initialEmail;
+  final String? initialPassword;
+  final bool rememberMe;
+
+  const LoginScreen({
+    super.key,
+    this.initialEmail,
+    this.initialPassword,
+    this.rememberMe = false,
+  });
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  bool rememberMe = false;
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+  late bool rememberMe;
 
   @override
   void initState() {
     super.initState();
-    _loadRememberedData();
-  }
-
-  Future<void> _loadRememberedData() async {
-    final credentials = await LoadCredentialsUsecase(repository: null);
-    final rememberedEmail = credentials['email'];
-    final rememberedPassword = credentials['password'];
-
-    if (rememberedEmail != null && rememberedPassword != null) {
-      emailController.text = rememberedEmail;
-      passwordController.text = rememberedPassword;
-      setState(() {
-        rememberMe = true;
-      });
-    }
+    emailController = TextEditingController(text: widget.initialEmail);
+    passwordController = TextEditingController(text: widget.initialPassword);
+    rememberMe = widget.rememberMe;
   }
 
   // Manejo del login
@@ -48,13 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = passwordController.text.trim();
 
     if (email.isNotEmpty && password.isNotEmpty) {
-      if (rememberMe) {
-        await OnSaveCredentialsEvent(email: email, password: password);
-      } else {
-        await OnDeleteCredentialsEvent();
-      }
-
-      context.read<AuthBloc>().add(OnLoginEvent(email: email, password: password));
+      context.read<AuthBloc>().add(OnLoginEvent(email: email, password: password, rememberMe: rememberMe));
     } else {
       CustomSnackBar.showWarning(
         context: context,

@@ -3,6 +3,7 @@ import 'package:car_seek/features/auth/data/sources/auth_source.dart';
 import 'package:car_seek/features/auth/domain/repositories/auth_repository.dart';
 import 'package:car_seek/features/auth/domain/use_cases/cerrar_sesion_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/get_current_user_usecase.dart';
+import 'package:car_seek/features/auth/domain/use_cases/load_credentials_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/login_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/register_usecase.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
@@ -41,13 +42,14 @@ Future<void> init() async {
   *Inicio de Auth
   * -------------*/
   //Bloc
-  di.registerFactory(() => AuthBloc(di(), di(), di(), di()));
+  di.registerFactory(() => AuthBloc(di(), di(), di(), di(), di()));
 
   //Use cases
   di.registerLazySingleton(() => LoginUseCase(repository: di()));
   di.registerLazySingleton(() => RegisterUseCase(repository: di()));
   di.registerLazySingleton(() => CerrarSesionUseCase(repository: di()));
   di.registerLazySingleton(() => GetCurrentUserUseCase(repository: di()));
+  di.registerLazySingleton(() => LoadCredentialsUsecase(repository: di()));
 
   //Repositories
   di.registerLazySingleton<AuthRepository>(

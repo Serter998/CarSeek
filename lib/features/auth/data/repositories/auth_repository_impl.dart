@@ -82,9 +82,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, Usuario>> login(String email, String password) async {
+  Future<Either<Failure, Usuario>> login(String email, String password, bool rememberMe) async {
     try {
-      final response = await authSource.login(email, password);
+      final response = await authSource.login(email, password, rememberMe);
 
       final user = response.user;
       if (user == null) {
@@ -196,32 +196,12 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, void>> deleteCredentials() async {
-    try {
-      final resp = await authSource.deleteCredentials();
-      return Right(resp);
-    } catch (e) {
-      return Left(ServerFailure(errorCode: 'unknown_error', statusCode: 500, customMessage: 'Error al eliminar las credenciales'));
-    }
-  }
-
-  @override
   Future<Either<Failure, Map<String, String?>>> loadCredentials() async {
     try {
       final resp = await authSource.loadCredentials();
       return Right(resp);
     } catch (e) {
       return Left(ServerFailure(errorCode: 'unknown_error', statusCode: 500, customMessage: 'Error al cargar las credenciales'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, void>> saveCredentials(String email, String password) async {
-    try {
-      final resp = await authSource.saveCredentials(email, password);
-      return Right(resp);
-    } catch (e) {
-      return Left(ServerFailure(errorCode: 'unknown_error', statusCode: 500, customMessage: 'Error al guardar las credenciales'));
     }
   }
 }

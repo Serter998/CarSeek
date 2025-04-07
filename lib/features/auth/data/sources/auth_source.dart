@@ -7,14 +7,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 abstract class AuthSource {
   Future<AuthResponse> register(String email, String password);
 
-  Future<AuthResponse> login(String email, String password);
+  Future<AuthResponse> login(String email, String password, bool rememberMe);
 
   Future<void> cerrarSesion();
 
   User? getCurrentUser();
 
-  Future<void> saveCredentials(String email, String password);
-  Future<void> deleteCredentials();
   Future<Map<String, String?>> loadCredentials();
 }
 
@@ -41,11 +39,18 @@ class AuthSourceImpl implements AuthSource {
   }
 
   @override
-  Future<AuthResponse> login(String email, String password) async {
+  Future<AuthResponse> login(String email, String password, bool rememberMe) async {
     final response = await supabaseClient.auth.signInWithPassword(
       email: email,
       password: password,
     );
+    if (rememberMe) {
+      await _storage.write(key: 'remembered_email', value: email);
+      await _storage.write(key: 'remembered_password', value: password);
+    } else {
+      await _storage.delete(key: 'remembered_email');
+      await _storage.delete(key: 'remembered_password');
+    }
     return response;
   }
 
@@ -57,18 +62,6 @@ class AuthSourceImpl implements AuthSource {
   @override
   Future<void> cerrarSesion() async {
     await supabaseClient.auth.signOut();
-  }
-
-  @override
-  Future<void> saveCredentials(String email, String password) async {
-    await _storage.write(key: 'remembered_email', value: email);
-    await _storage.write(key: 'remembered_password', value: password);
-  }
-
-  @override
-  Future<void> deleteCredentials() async {
-    await _storage.delete(key: 'remembered_email');
-    await _storage.delete(key: 'remembered_password');
   }
 
   @override

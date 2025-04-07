@@ -1,11 +1,9 @@
 import 'package:car_seek/core/errors/failure.dart';
 import 'package:car_seek/features/auth/domain/use_cases/cerrar_sesion_usecase.dart';
-import 'package:car_seek/features/auth/domain/use_cases/delete_credentials_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/get_current_user_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/load_credentials_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/login_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/register_usecase.dart';
-import 'package:car_seek/features/auth/domain/use_cases/save_credentials_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:car_seek/share/domain/entities/usuario.dart';
 
@@ -18,18 +16,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUseCase _loginUseCase;
   final GetCurrentUserUseCase _getCurrentUserUseCase;
   final CerrarSesionUseCase _cerrarSesionUseCase;
-  final SaveCredentialsUsecase _saveCredentialsUsecase;
   final LoadCredentialsUsecase _loadCredentialsUsecase;
-  final DeleteCredentialsUsecase _deleteCredentialsUsecase;
 
   AuthBloc(
     this._registerUseCase,
     this._loginUseCase,
     this._getCurrentUserUseCase,
     this._cerrarSesionUseCase,
-    this._deleteCredentialsUsecase,
     this._loadCredentialsUsecase,
-    this._saveCredentialsUsecase,
   ) : super(AuthInitial()) {
     on<OnRegisterEvent>((event, emit) async {
       emit(AuthLoading());
@@ -48,10 +42,30 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
     });
 
+    on<OnLoadCredentialsEvent>((event, emit) async {
+      emit(AuthLoading());
+      final resp = await _loadCredentialsUsecase();
+
+      resp.fold(
+        (failure) => emit(AuthInitial()),
+        (credentials) => emit(
+          AuthInitial(
+            savedEmail: credentials['email'],
+            savedPassword: credentials['password'],
+            hasSavedCredentials: credentials['email'] != null,
+          ),
+        ),
+      );
+    });
+
     on<OnLoginEvent>((event, emit) async {
       emit(AuthLoading());
 
-      final resp = await _loginUseCase(event.email, event.password);
+      final resp = await _loginUseCase(
+        event.email,
+        event.password,
+        event.rememberMe,
+      );
 
       resp.fold(
         (f) => emit(AuthError(failure: f)),

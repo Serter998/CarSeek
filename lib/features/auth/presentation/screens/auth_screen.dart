@@ -12,8 +12,17 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AuthBloc>().add(OnCheckUserLoginEvent());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final authBloc = context.read<AuthBloc>();
+
+      // Primero carga las credenciales
+      authBloc.add(OnLoadCredentialsEvent());
+
+      // Espera un pequeño delay para que se cargue antes de verificar el usuario
+      await Future.delayed(const Duration(milliseconds: 200));
+
+      // Luego verifica si el usuario está logueado
+      authBloc.add(OnCheckUserLoginEvent());
     });
     return Scaffold(
       appBar: AppBar(
@@ -26,10 +35,12 @@ class AuthScreen extends StatelessWidget {
             } else if (state is AuthLoginSuccess) {
               return const Text("Acceso exitoso");
             } else if (state is AuthRegisterSuccess) {
-              return const Text("Registro Exitoso, Confirme su cuenta e inicie sesión");
-            } else if (state is AuthForgotPassword){
+              return const Text(
+                "Registro Exitoso, Confirme su cuenta e inicie sesión",
+              );
+            } else if (state is AuthForgotPassword) {
               return const Text("Recuperar Contraseña");
-            }else if (state is AuthError) {
+            } else if (state is AuthError) {
               return const Text("");
             } else if (state is AuthLoading) {
               return const Text("Cargando");
@@ -44,8 +55,12 @@ class AuthScreen extends StatelessWidget {
           switch (state) {
             case AuthLoading():
               return const Center(child: CircularProgressIndicator());
-            case AuthInitial():
-              return LoginScreen();
+            case AuthInitial(:final savedEmail, :final savedPassword):
+              return LoginScreen(
+                initialEmail: savedEmail,
+                initialPassword: savedPassword,
+                rememberMe: savedEmail != null,
+              );
             case AuthRegister():
               return RegisterScreen();
             case AuthForgotPassword():

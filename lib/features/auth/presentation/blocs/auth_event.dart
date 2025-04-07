@@ -21,8 +21,9 @@ class OnRegisterEvent extends AuthEvent {
 class OnLoginEvent extends AuthEvent {
   final String email;
   final String password;
+  final bool rememberMe;
 
-  OnLoginEvent({required this.email, required this.password});
+  OnLoginEvent({required this.email, required this.password, required this.rememberMe});
 }
 
 class OnForgotPasswordEvent extends AuthEvent {
@@ -40,4 +41,6 @@ class OnNavigateToRegisterEvent extends AuthEvent {}
 class OnNavigateToLoginEvent extends AuthEvent {}
 
 class OnNavigateToForgotPasswordEvent extends AuthEvent {}
+
+class OnLoadCredentialsEvent extends AuthEvent {}
 
