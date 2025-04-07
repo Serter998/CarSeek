@@ -31,7 +31,6 @@ class OnForgotPasswordEvent extends AuthEvent {
   OnForgotPasswordEvent({required this.email});
 }
 
-
 class OnCheckUserLoginEvent extends AuthEvent {}
 
 class OnCloseSessionEvent extends AuthEvent {}

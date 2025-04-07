@@ -23,8 +23,10 @@ class AuthScreen extends StatelessWidget {
               return const Text("Registro");
             } else if (state is AuthInitial) {
               return const Text("Inicio de sesión");
-            } else if (state is AuthSuccess) {
+            } else if (state is AuthLoginSuccess) {
               return const Text("Acceso exitoso");
+            } else if (state is AuthRegisterSuccess) {
+              return const Text("Registro Exitoso, Confirme su cuenta e inicie sesión");
             } else if (state is AuthForgotPassword){
               return const Text("Recuperar Contraseña");
             }else if (state is AuthError) {
@@ -50,8 +52,10 @@ class AuthScreen extends StatelessWidget {
               return ForgotPasswordScreen();
             case AuthError():
               return AuthErrorScreen(failure: state.failure);
-            case AuthSuccess():
+            case AuthLoginSuccess():
               return AuthSuccessScreen();
+            case AuthRegisterSuccess():
+              return LoginScreen();
           }
         },
       ),

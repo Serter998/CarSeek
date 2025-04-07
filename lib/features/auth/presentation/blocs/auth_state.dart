@@ -6,10 +6,11 @@ final class AuthInitial extends AuthState {}
 final class AuthRegister extends AuthState {}
 final class AuthLoading extends AuthState {}
 class AuthForgotPassword extends AuthState {}
-final class AuthSuccess extends AuthState {
+final class AuthLoginSuccess extends AuthState {
   final Usuario user;
-  AuthSuccess({required this.user});
+  AuthLoginSuccess({required this.user});
 }
+final class AuthRegisterSuccess extends AuthState {}
 final class AuthError extends AuthState {
   final Failure failure;
   AuthError({required this.failure});
