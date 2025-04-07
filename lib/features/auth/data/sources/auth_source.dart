@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class AuthSource {
@@ -11,6 +12,10 @@ abstract class AuthSource {
   Future<void> cerrarSesion();
 
   User? getCurrentUser();
+
+  Future<void> saveCredentials(String email, String password);
+  Future<void> deleteCredentials();
+  Future<Map<String, String?>> loadCredentials();
 }
 
 class AuthSourceImpl implements AuthSource {
@@ -23,6 +28,8 @@ class AuthSourceImpl implements AuthSource {
     dotenv.env['SUPABASE_KEY']!,
     authOptions: const AuthClientOptions(authFlowType: AuthFlowType.implicit),
   );
+
+  final FlutterSecureStorage _storage = FlutterSecureStorage();
 
   @override
   Future<AuthResponse> register(String email, String password) async {
@@ -50,5 +57,27 @@ class AuthSourceImpl implements AuthSource {
   @override
   Future<void> cerrarSesion() async {
     await supabaseClient.auth.signOut();
+  }
+
+  @override
+  Future<void> saveCredentials(String email, String password) async {
+    await _storage.write(key: 'remembered_email', value: email);
+    await _storage.write(key: 'remembered_password', value: password);
+  }
+
+  @override
+  Future<void> deleteCredentials() async {
+    await _storage.delete(key: 'remembered_email');
+    await _storage.delete(key: 'remembered_password');
+  }
+
+  @override
+  Future<Map<String, String?>> loadCredentials() async {
+    final rememberedEmail = await _storage.read(key: 'remembered_email');
+    final rememberedPassword = await _storage.read(key: 'remembered_password');
+    return {
+      'email': rememberedEmail,
+      'password': rememberedPassword,
+    };
   }
 }

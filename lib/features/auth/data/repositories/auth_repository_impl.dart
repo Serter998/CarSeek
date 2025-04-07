@@ -194,4 +194,34 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(ServerFailure(errorCode: 'unknown_error', statusCode: 500));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> deleteCredentials() async {
+    try {
+      final resp = await authSource.deleteCredentials();
+      return Right(resp);
+    } catch (e) {
+      return Left(ServerFailure(errorCode: 'unknown_error', statusCode: 500, customMessage: 'Error al eliminar las credenciales'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String, String?>>> loadCredentials() async {
+    try {
+      final resp = await authSource.loadCredentials();
+      return Right(resp);
+    } catch (e) {
+      return Left(ServerFailure(errorCode: 'unknown_error', statusCode: 500, customMessage: 'Error al cargar las credenciales'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> saveCredentials(String email, String password) async {
+    try {
+      final resp = await authSource.saveCredentials(email, password);
+      return Right(resp);
+    } catch (e) {
+      return Left(ServerFailure(errorCode: 'unknown_error', statusCode: 500, customMessage: 'Error al guardar las credenciales'));
+    }
+  }
 }

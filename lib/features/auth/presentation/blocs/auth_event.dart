@@ -40,3 +40,4 @@ class OnNavigateToRegisterEvent extends AuthEvent {}
 class OnNavigateToLoginEvent extends AuthEvent {}
 
 class OnNavigateToForgotPasswordEvent extends AuthEvent {}
+

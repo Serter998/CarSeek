@@ -1,4 +1,4 @@
-import 'package:car_seek/core/services/remembered_credentials_service.dart';
+import 'package:car_seek/features/auth/domain/use_cases/load_credentials_usecase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
@@ -21,7 +21,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool rememberMe = false;
-  final RememberedCredentialsService _credentialsService = RememberedCredentialsService();
 
   @override
   void initState() {
@@ -30,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _loadRememberedData() async {
-    final credentials = await _credentialsService.loadCredentials();
+    final credentials = await LoadCredentialsUsecase(repository: null);
     final rememberedEmail = credentials['email'];
     final rememberedPassword = credentials['password'];
 
@@ -50,9 +49,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (email.isNotEmpty && password.isNotEmpty) {
       if (rememberMe) {
-        await _credentialsService.saveCredentials(email, password);
+        await OnSaveCredentialsEvent(email: email, password: password);
       } else {
-        await _credentialsService.deleteCredentials();
+        await OnDeleteCredentialsEvent();
       }
 
       context.read<AuthBloc>().add(OnLoginEvent(email: email, password: password));
