@@ -25,6 +25,7 @@ class AuthScreen extends StatelessWidget {
       authBloc.add(OnCheckUserLoginEvent());
     });
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: BlocBuilder<AuthBloc, AuthState>(
           builder: (context, state) {

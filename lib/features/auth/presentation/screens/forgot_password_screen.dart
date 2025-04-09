@@ -1,3 +1,5 @@
+import 'package:car_seek/core/themes/dividers_styles.dart';
+import 'package:car_seek/core/themes/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/widgets/action_button.dart';
@@ -26,23 +28,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 8.0),
+              padding: const EdgeInsets.only(bottom: 16),
               child: Text(
                 "Introduce tu correo electrónico para restablecer tu contraseña",
-                style: TextStyle(
-                  fontSize: 19,
-                  color: Colors.white,
-                  fontWeight: FontWeight.normal,
-                ),
+                style: TextStyles.defaultText,
                 textAlign: TextAlign.left,
               ),
             ),
-            const SizedBox(height: 20),
             InputText(
               placeholder: "Correo electrónico*",
+              icon: Icon(Icons.mail),
               controller: emailController,
+              toolTip: null,
+              isPassword: false,
+              longitudMax: 100,
             ),
-            const SizedBox(height: 20),
             ActionButton(
               function: () {
                 final email = emailController.text.trim();
@@ -65,17 +65,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               },
               text: "Enviar enlace de restablecimiento",
             ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                RedirectTextButton(
-                  function: () {
-                    context.read<AuthBloc>().add(OnNavigateToLoginEvent());
-                  },
-                  text: "Volver al Inicio de Sesión",
-                ),
-              ],
+            DividersStyles.dividerGray,
+            RedirectTextButton(
+              function: () {
+                context.read<AuthBloc>().add(OnLoadCredentialsEvent());
+              },
+              text: "Volver al Inicio de Sesión",
             ),
           ],
         ),

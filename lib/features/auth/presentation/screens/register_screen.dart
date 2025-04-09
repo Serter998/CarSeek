@@ -1,8 +1,8 @@
 import 'package:car_seek/core/services/validation_service.dart';
+import 'package:car_seek/core/themes/dividers_styles.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/widgets/action_button.dart';
 import 'package:car_seek/features/auth/presentation/widgets/custom_snack_bar.dart';
-import 'package:car_seek/features/auth/presentation/widgets/password_input_text.dart';
 import 'package:car_seek/features/auth/presentation/widgets/redirect_text_button.dart';
 import 'package:car_seek/features/auth/presentation/widgets/text_fields.dart';
 import 'package:flutter/material.dart';
@@ -27,45 +27,61 @@ class RegisterScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Crear una cuenta",
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headlineSmall,
-            ),
-            const SizedBox(height: 20),
             InputText(
               placeholder: "Introduzca su nombre*",
+              icon: Icon(Icons.person),
               controller: nombreController,
+              toolTip: null,
+              isPassword: false,
+              longitudMax: 100,
             ),
             InputText(
               placeholder: "Introduzca su correo*",
+              icon: Icon(Icons.mail),
               controller: emailController,
+              toolTip: "example@mail.com",
+              isPassword: false,
+              longitudMax: 100,
             ),
-            PasswordInputText(
+            InputText(
               placeholder: "Introduzca su contraseña*",
+              icon: Icon(Icons.lock),
               controller: passwordController,
+              toolTip: "Longitud minima 8, debe contener 1 mayúscula, 1 minúscula, 1 número y un caracter especial como mínimo.",
+              isPassword: true,
+              longitudMax: 80,
             ),
-            PasswordInputText(
+            InputText(
               placeholder: "Confirmar contraseña*",
+              icon: Icon(Icons.lock_outline),
               controller: passwordConfirmController,
+              toolTip: "Longitud minima 8, debe contener 1 mayúscula, 1 minúscula, 1 número y un caracter especial como mínimo.",
+              isPassword: true,
+              longitudMax: 80,
             ),
             InputText(
               placeholder: "Teléfono (opcional)",
+              icon: Icon(Icons.phone),
               controller: telefonoController,
+              toolTip: "Ej: 666 666 666",
+              isPassword: false,
+              longitudMax: 16,
             ),
             InputText(
               placeholder: "Ubicación (opcional)",
+              icon: Icon(Icons.location_pin),
               controller: ubicacionController,
+              toolTip: null,
+              isPassword: false,
+              longitudMax: 80,
             ),
-            const SizedBox(height: 20),
+            DividersStyles.dividerGray,
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 RedirectTextButton(
                   function: () {
-                    context.read<AuthBloc>().add(OnNavigateToLoginEvent());
+                    context.read<AuthBloc>().add(OnLoadCredentialsEvent());
                   },
                   text: "¿Ya tienes una cuenta? Inicia sesión",
                 ),

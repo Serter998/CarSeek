@@ -1,4 +1,4 @@
-import 'package:car_seek/features/auth/domain/use_cases/load_credentials_usecase.dart';
+import 'package:car_seek/core/themes/dividers_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
@@ -6,7 +6,6 @@ import 'package:car_seek/features/auth/presentation/widgets/action_button.dart';
 import 'package:car_seek/features/auth/presentation/widgets/custom_snack_bar.dart';
 import 'package:car_seek/features/auth/presentation/widgets/redirect_text_button.dart';
 import 'package:car_seek/features/auth/presentation/widgets/text_fields.dart';
-import 'package:car_seek/features/auth/presentation/widgets/password_input_text.dart';
 import 'package:car_seek/features/auth/presentation/widgets/remember_checkbox.dart';
 
 
@@ -58,48 +57,54 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          InputText(
-            placeholder: "Introduzca su correo*",
-            controller: emailController,
-          ),
-          PasswordInputText(
-            placeholder: "Introduzca su contraseña*",
-            controller: passwordController,
-          ),
-          RememberMeCheckbox(
-            value: rememberMe,
-            onChanged: (value) {
-              setState(() {
-                rememberMe = value!;
-              });
-            },
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              RedirectTextButton(
-                function: () {
-                  context.read<AuthBloc>().add(OnNavigateToForgotPasswordEvent());
-                },
-                text: "¿Has olvidado tu contraseña?",
-              ),
-              RedirectTextButton(
-                function: () {
-                  context.read<AuthBloc>().add(OnNavigateToRegisterEvent());
-                },
-                text: "¿Aún no estás registrado?",
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          ActionButton(
-            function: () => _handleLogin(context),
-            text: "Iniciar sesión",
-          ),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            InputText(
+              placeholder: "Introduzca su correo*",
+              icon: Icon(Icons.mail),
+              controller: emailController,
+              toolTip: null,
+              isPassword: false,
+              longitudMax: 100,
+            ),
+            InputText(
+              placeholder: "Introduzca su contraseña*",
+              icon: Icon(Icons.lock),
+              controller: passwordController,
+              toolTip: null,
+              isPassword: true,
+              longitudMax: 80,
+            ),
+            RedirectTextButton(
+              function: () {
+                context.read<AuthBloc>().add(OnNavigateToForgotPasswordEvent());
+              },
+              text: "¿Has olvidado tu contraseña?",
+            ),
+            RememberMeCheckbox(
+              value: rememberMe,
+              onChanged: (value) {
+                setState(() {
+                  rememberMe = value!;
+                });
+              },
+            ),
+            const SizedBox(height: 10),
+            ActionButton(
+              function: () => _handleLogin(context),
+              text: "Iniciar sesión",
+            ),
+            DividersStyles.dividerGray,
+            RedirectTextButton(
+              function: () {
+                context.read<AuthBloc>().add(OnNavigateToRegisterEvent());
+              },
+              text: "¿Aún no estás registrado?",
+            ),
+          ],
+        ),
       ),
     );
   }
