@@ -1,29 +1,18 @@
+import 'package:car_seek/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-
-const Color _customColor = Color.fromARGB(245, 7, 179, 167);
-const List<Color> _colorThemes = [
-  _customColor,
-  Color.fromRGBO(52, 73, 94, 1),
-  Color.fromRGBO(231, 76, 60, 1),
-  Color.fromRGBO(46, 204, 113, 1),
-  Color.fromRGBO(241, 196, 15, 1),
-  Color.fromRGBO(155, 89, 182, 1),
-  Color.fromRGBO(52, 152, 219, 1),
-  Color.fromRGBO(230, 126, 34, 1),
-  Color.fromRGBO(39, 174, 96, 1),
-];
 
 class AppTheme {
   final int selectedColor;
 
   AppTheme({this.selectedColor = 0})
       : assert(
-  selectedColor >= 0 && selectedColor <= _colorThemes.length - 1,
-  'El índice de colores debe estar entre 0 y ${_colorThemes.length - 1}',
+  selectedColor >= 0 &&
+      selectedColor <= AppColors.themeColors.length - 1,
+  'El índice de colores debe estar entre 0 y ${AppColors.themeColors.length - 1}',
   );
 
   ThemeData theme() {
-    final Color primaryColor = _colorThemes[selectedColor];
+    final Color primaryColor = AppColors.themeColors[selectedColor];
 
     return ThemeData(
       useMaterial3: true,

@@ -52,6 +52,10 @@ class _InputTextState extends State<InputText>
       parent: _animationController,
       curve: Curves.easeInOut,
     );
+
+    if (!widget.isPassword) {
+      _isPasswordVisible = true;
+    }
   }
 
   @override
@@ -68,51 +72,50 @@ class _InputTextState extends State<InputText>
     final offset = renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
 
     _tooltipOverlay = OverlayEntry(
-      builder: (context) =>
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () {
-              _focusNode.unfocus(); // Cierra el tooltip al hacer tap fuera
-            },
-            child: Stack(
-              children: [
-                Positioned(
-                  left: offset.dx + 40,
-                  top: offset.dy - 50,
-                  child: FadeTransition(
-                    opacity: _fadeAnimation,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 14, vertical: 10),
-                        decoration: BoxDecoration(
-                          color: Color.fromARGB(245, 7, 179, 167),
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 12,
-                              offset: const Offset(0, 6),
-                            ),
-                          ],
+      builder: (context) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          _focusNode.unfocus();
+        },
+        child: Stack(
+          children: [
+            Positioned(
+              left: offset.dx + 40,
+              top: offset.dy - 50,
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: Material(
+                  color: Colors.transparent,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(245, 7, 179, 167),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 12,
+                          offset: Offset(0, 6),
                         ),
-                        child: Text(
-                          widget.toolTip ?? "",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.3,
-                          ),
-                        ),
+                      ],
+                    ),
+                    child: Text(
+                      widget.toolTip ?? "",
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.3,
                       ),
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
+        ),
+      ),
     );
 
     overlay.insert(_tooltipOverlay!);
@@ -127,49 +130,33 @@ class _InputTextState extends State<InputText>
 
   @override
   Widget build(BuildContext context) {
-    if (!widget.isPassword) {
-      _isPasswordVisible = true;
-    }
-
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () {
-        _focusNode.unfocus();
-      },
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 16, right: 8, left: 8),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 8),
-              child: widget.icon,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16, right: 8, left: 8),
+      child: TextField(
+        controller: widget.controller,
+        focusNode: widget.toolTip != null ? _focusNode : null,
+        obscureText: !_isPasswordVisible,
+        maxLength: widget.longitudMax,
+        decoration: InputDecoration(
+          hintText: widget.placeholder,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          prefixIcon: widget.icon,
+          suffixIcon: widget.isPassword
+              ? IconButton(
+            icon: Icon(
+              _isPasswordVisible
+                  ? Icons.visibility_off
+                  : Icons.visibility,
             ),
-            Expanded(
-              child: TextField(
-                controller: widget.controller,
-                focusNode: widget.toolTip != null ? _focusNode : null,
-                obscureText: !_isPasswordVisible,
-                maxLength: widget.longitudMax,
-                decoration: InputDecoration(
-                  hintText: widget.placeholder,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  suffixIcon: widget.isPassword ? IconButton(
-                    icon: Icon(
-                      _isPasswordVisible ? Icons.visibility_off : Icons
-                          .visibility,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _isPasswordVisible = !_isPasswordVisible;
-                      });
-                    },
-                  ) : null,
-                ),
-              ),
-            ),
-          ],
+            onPressed: () {
+              setState(() {
+                _isPasswordVisible = !_isPasswordVisible;
+              });
+            },
+          )
+              : null,
         ),
       ),
     );

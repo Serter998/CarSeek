@@ -8,7 +8,6 @@ import 'package:car_seek/features/auth/presentation/widgets/redirect_text_button
 import 'package:car_seek/features/auth/presentation/widgets/text_fields.dart';
 import 'package:car_seek/features/auth/presentation/widgets/remember_checkbox.dart';
 
-
 class LoginScreen extends StatefulWidget {
   final String? initialEmail;
   final String? initialPassword;
@@ -38,13 +37,18 @@ class _LoginScreenState extends State<LoginScreen> {
     rememberMe = widget.rememberMe;
   }
 
-  // Manejo del login
   Future<void> _handleLogin(BuildContext context) async {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
     if (email.isNotEmpty && password.isNotEmpty) {
-      context.read<AuthBloc>().add(OnLoginEvent(email: email, password: password, rememberMe: rememberMe));
+      context.read<AuthBloc>().add(
+        OnLoginEvent(
+          email: email,
+          password: password,
+          rememberMe: rememberMe,
+        ),
+      );
     } else {
       CustomSnackBar.showWarning(
         context: context,
@@ -61,9 +65,18 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            const SizedBox(height: 30),
+            Center(
+              child: Image.asset(
+                'assets/images/CarSeekSinFondo.png',
+                height: 200,
+                fit: BoxFit.contain,
+              ),
+            ),
+            const SizedBox(height: 20),
             InputText(
               placeholder: "Introduzca su correo*",
-              icon: Icon(Icons.mail),
+              icon: const Icon(Icons.mail),
               controller: emailController,
               toolTip: null,
               isPassword: false,
@@ -71,18 +84,13 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             InputText(
               placeholder: "Introduzca su contraseña*",
-              icon: Icon(Icons.lock),
+              icon: const Icon(Icons.lock),
               controller: passwordController,
               toolTip: null,
               isPassword: true,
               longitudMax: 80,
             ),
-            RedirectTextButton(
-              function: () {
-                context.read<AuthBloc>().add(OnNavigateToForgotPasswordEvent());
-              },
-              text: "¿Has olvidado tu contraseña?",
-            ),
+            const SizedBox(height: 1),
             RememberMeCheckbox(
               value: rememberMe,
               onChanged: (value) {
@@ -90,6 +98,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   rememberMe = value!;
                 });
               },
+            ),
+            RedirectTextButton(
+              function: () {
+                context.read<AuthBloc>().add(OnNavigateToForgotPasswordEvent());
+              },
+              text: "¿Has olvidado tu contraseña?",
             ),
             const SizedBox(height: 10),
             ActionButton(
