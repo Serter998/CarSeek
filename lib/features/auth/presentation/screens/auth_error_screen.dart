@@ -61,7 +61,7 @@ class AuthErrorScreen extends StatelessWidget {
               padding: const EdgeInsets.only(top: 16.0),
               child: RedirectTextButton(
                 function: () {
-                  context.read<AuthBloc>().add(OnCheckUserLoginEvent());
+                  context.read<AuthBloc>().add(OnLoadCredentialsEvent());
                 },
                 text: "Volver al inicio",
               ),

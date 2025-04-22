@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
         title: "CarSeek",
         routes: {
           AppRoutes.initial: (context) => const AuthScreen(),
+          AppRoutes.home: (context) => const AuthScreen(),
         },
         initialRoute: AppRoutes.initial,
       ),
