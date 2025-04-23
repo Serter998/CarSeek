@@ -18,4 +18,6 @@ abstract class AuthRepository {
   Future<Either<Failure, Usuario?>> getCurrentUser();
 
   Future<Either<Failure, Map<String, String?>>> loadCredentials();
+
+  Future<Either<Failure, void>> resetPassword(String email);
 }

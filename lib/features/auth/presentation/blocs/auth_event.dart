@@ -44,3 +44,9 @@ class OnNavigateToForgotPasswordEvent extends AuthEvent {}
 
 class OnLoadCredentialsEvent extends AuthEvent {}
 
+class OnUpdatePasswordEvent extends AuthEvent {
+  final String newPassword;
+
+  OnUpdatePasswordEvent({required this.newPassword});
+}
+

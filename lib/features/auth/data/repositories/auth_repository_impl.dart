@@ -204,4 +204,42 @@ class AuthRepositoryImpl implements AuthRepository {
       return Left(ServerFailure(errorCode: 'unknown_error', statusCode: 500, customMessage: 'Error al cargar las credenciales'));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> resetPassword(String email) async {
+    try {
+      // Validación básica de email
+      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email)) {
+        return const Left(InvalidEmailFailure());
+      }
+
+      await authSource.resetPassword(email);
+      return const Right(null);
+    } on AuthException catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Failed host lookup')) {
+        return const Left(
+          NetworkFailure(errorCode: 'no_internet', statusCode: 503),
+        );
+      }
+
+      return Left(switch (e.code) {
+        'email_not_found' => const UserNotFoundFailure(),
+        'rate_limit_exceeded' => const RateLimitFailure(),
+        _ => AuthFailure(
+          customMessage: 'Error al enviar el correo de recuperación',
+          errorCode: e.code,
+          statusCode: int.tryParse(e.statusCode ?? '500') ?? 500,
+        ),
+      });
+    } catch (e) {
+      return Left(
+        ServerFailure(
+          errorCode: 'unknown_error',
+          statusCode: 500,
+          customMessage: 'Error desconocido al recuperar contraseña',
+        ),
+      );
+    }
+  }
 }

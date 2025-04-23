@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -6,36 +7,27 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class AuthSource {
   Future<AuthResponse> register(String email, String password);
-
   Future<AuthResponse> login(String email, String password, bool rememberMe);
-
   Future<void> cerrarSesion();
-
   User? getCurrentUser();
-
   Future<Map<String, String?>> loadCredentials();
+  Future<void> resetPassword(String email);
 }
 
 class AuthSourceImpl implements AuthSource {
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
   final String _apiKey;
 
   AuthSourceImpl(this._apiKey);
 
-  final SupabaseClient supabaseClient = SupabaseClient(
-    dotenv.env['SUPABASE_URL']!,
-    dotenv.env['SUPABASE_KEY']!,
-    authOptions: const AuthClientOptions(authFlowType: AuthFlowType.implicit),
-  );
-
-  final FlutterSecureStorage _storage = FlutterSecureStorage();
+  final SupabaseClient supabaseClient = Supabase.instance.client;
 
   @override
   Future<AuthResponse> register(String email, String password) async {
-    final response = await supabaseClient.auth.signUp(
+    return await supabaseClient.auth.signUp(
       email: email,
       password: password,
     );
-    return response;
   }
 
   @override
@@ -44,6 +36,7 @@ class AuthSourceImpl implements AuthSource {
       email: email,
       password: password,
     );
+
     if (rememberMe) {
       await _storage.write(key: 'remembered_email', value: email);
       await _storage.write(key: 'remembered_password', value: password);
@@ -62,6 +55,7 @@ class AuthSourceImpl implements AuthSource {
   @override
   Future<void> cerrarSesion() async {
     await supabaseClient.auth.signOut();
+    await _storage.deleteAll();
   }
 
   @override
@@ -72,5 +66,14 @@ class AuthSourceImpl implements AuthSource {
       'email': rememberedEmail,
       'password': rememberedPassword,
     };
+  }
+
+  @override
+  Future<void> resetPassword(String email) async {
+    final redirectTo = '${dotenv.env['APP_REDIRECT_URL']}/auth/reset-password';
+    await supabaseClient.auth.resetPasswordForEmail(
+      email,
+      redirectTo: redirectTo,
+    );
   }
 }

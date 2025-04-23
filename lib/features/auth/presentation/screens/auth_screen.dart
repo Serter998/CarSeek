@@ -1,3 +1,5 @@
+import 'package:car_seek/core/errors/auth_failure.dart';
+import 'package:car_seek/core/errors/failure.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/screens/auth_error_screen.dart';
 import 'package:car_seek/features/auth/presentation/screens/auth_success_screen.dart';
@@ -53,25 +55,33 @@ class AuthScreen extends StatelessWidget {
       ),
       body: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
-          switch (state) {
-            case AuthLoading():
+          switch (state.runtimeType) {
+            case AuthLoading:
               return const Center(child: CircularProgressIndicator());
-            case AuthInitial(:final savedEmail, :final savedPassword):
+            case AuthInitial:
+              final savedEmail = (state as AuthInitial).savedEmail;
+              final savedPassword = (state as AuthInitial).savedPassword;
               return LoginScreen(
                 initialEmail: savedEmail,
                 initialPassword: savedPassword,
                 rememberMe: savedEmail != null,
               );
-            case AuthRegister():
+            case AuthRegister:
               return RegisterScreen();
-            case AuthForgotPassword():
+            case AuthForgotPassword:
               return ForgotPasswordScreen();
-            case AuthError():
-              return AuthErrorScreen(failure: state.failure);
-            case AuthLoginSuccess():
-              return AuthSuccessScreen();
-            case AuthRegisterSuccess():
+            case AuthForgotPasswordSuccess:
               return LoginScreen();
+            case AuthError:
+              return AuthErrorScreen(failure: (state as AuthError).failure);
+            case AuthLoginSuccess:
+              return AuthSuccessScreen();
+            case AuthRegisterSuccess:
+              return LoginScreen();
+            case AuthPasswordResetSuccess:
+              return AuthSuccessScreen();
+            default:
+              return const Center(child: Text("Estado no contemplado"));
           }
         },
       ),

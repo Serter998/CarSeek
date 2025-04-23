@@ -1,14 +1,15 @@
 import 'package:car_seek/core/errors/failure.dart';
 import 'package:car_seek/features/auth/domain/use_cases/cerrar_sesion_usecase.dart';
+import 'package:car_seek/features/auth/domain/use_cases/forgot_password_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/get_current_user_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/load_credentials_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/login_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/register_usecase.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:car_seek/share/domain/entities/usuario.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'auth_event.dart';
-
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
@@ -17,14 +18,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final GetCurrentUserUseCase _getCurrentUserUseCase;
   final CerrarSesionUseCase _cerrarSesionUseCase;
   final LoadCredentialsUsecase _loadCredentialsUsecase;
+  final ForgotPasswordUsecase _forgotPasswordUsecase;
 
   AuthBloc(
-    this._registerUseCase,
-    this._loginUseCase,
-    this._getCurrentUserUseCase,
-    this._cerrarSesionUseCase,
-    this._loadCredentialsUsecase,
-  ) : super(AuthInitial()) {
+      this._registerUseCase,
+      this._loginUseCase,
+      this._getCurrentUserUseCase,
+      this._cerrarSesionUseCase,
+      this._loadCredentialsUsecase,
+      this._forgotPasswordUsecase
+      ) : super(AuthInitial()) {
     on<OnRegisterEvent>((event, emit) async {
       emit(AuthLoading());
 
@@ -37,8 +40,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       resp.fold(
-        (f) => emit(AuthError(failure: f)),
-        (u) => emit(AuthRegisterSuccess()),
+            (f) => emit(AuthError(failure: f)),
+            (_) => emit(AuthRegisterSuccess()),
       );
     });
 
@@ -47,8 +50,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final resp = await _loadCredentialsUsecase();
 
       resp.fold(
-        (failure) => emit(AuthInitial()),
-        (credentials) => emit(
+            (_) => emit(AuthInitial()),
+            (credentials) => emit(
           AuthInitial(
             savedEmail: credentials['email'],
             savedPassword: credentials['password'],
@@ -68,8 +71,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       resp.fold(
-        (f) => emit(AuthError(failure: f)),
-        (u) => emit(AuthLoginSuccess(user: u)),
+            (f) => emit(AuthError(failure: f)),
+            (u) => emit(AuthLoginSuccess(user: u)),
       );
     });
 
@@ -78,31 +81,41 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       final resp = await _getCurrentUserUseCase();
 
-      resp.fold((f) => emit(AuthError(failure: f)), (u) {
-        if (u != null) {
-          emit(AuthLoginSuccess(user: u));
-        } else {
-          emit(AuthInitial());
-        }
-      });
+      resp.fold(
+            (f) => emit(AuthError(failure: f)),
+            (u) => u != null ? emit(AuthLoginSuccess(user: u)) : emit(AuthInitial()),
+      );
     });
 
     on<OnCloseSessionEvent>((event, emit) async {
       final resp = await _cerrarSesionUseCase();
 
-      resp.fold((f) => emit(AuthError(failure: f)), (r) => emit(AuthInitial()));
+      resp.fold(
+            (f) => emit(AuthError(failure: f)),
+            (_) => emit(AuthInitial()),
+      );
     });
 
-    on<OnNavigateToRegisterEvent>((event, emit) {
-      emit(AuthRegister());
-    });
+    on<OnNavigateToRegisterEvent>((event, emit) => emit(AuthRegister()));
+    on<OnNavigateToLoginEvent>((event, emit) => emit(AuthInitial()));
+    on<OnNavigateToForgotPasswordEvent>((event, emit) => emit(AuthForgotPassword()));
 
-    on<OnNavigateToLoginEvent>((event, emit) {
-      emit(AuthInitial());
-    });
+    on<OnForgotPasswordEvent>((event, emit) async {
+      emit(AuthLoading());
+        final resp = await _forgotPasswordUsecase(event.email);
 
-    on<OnNavigateToForgotPasswordEvent>((event, emit) {
-      emit(AuthForgotPassword());
+        resp.fold(
+            (f) => emit(AuthError(failure: f)),
+            (_) => emit(AuthForgotPasswordSuccess(
+              message: "Te hemos enviado un enlace para restablecer tu contraseña.",
+            )),
+        );
+      }
+    );
+
+    on<OnUpdatePasswordEvent>((event, emit) async {
+      emit(AuthLoading());
+
     });
   }
 }

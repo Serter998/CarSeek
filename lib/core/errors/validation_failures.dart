@@ -33,3 +33,14 @@ class DatabaseFailure extends Failure {
     super.statusCode = 500,
   });
 }
+
+class RateLimitFailure extends AuthFailure {
+  @override
+  String get defaultMessage => 'Demasiados intentos. Intenta de nuevo más tarde.';
+
+  const RateLimitFailure({
+    super.customMessage,
+    super.errorCode = 'rate_limit_exceeded',
+    super.statusCode = 429,
+  });
+}

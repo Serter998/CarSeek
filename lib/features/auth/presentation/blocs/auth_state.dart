@@ -43,3 +43,14 @@ final class AuthError extends AuthState {
 
   AuthError({required this.failure});
 }
+
+final class AuthForgotPasswordSuccess extends AuthState {
+  final String message;
+
+  AuthForgotPasswordSuccess({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
+
+final class AuthPasswordResetSuccess extends AuthState {}
