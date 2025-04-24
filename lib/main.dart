@@ -2,6 +2,7 @@ import 'package:car_seek/core/themes/app_theme.dart';
 import 'package:car_seek/di.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/screens/auth_screen.dart';
+import 'package:car_seek/features/home/presentation/screens/home_screen.dart';
 import 'package:car_seek/supabase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,7 +41,7 @@ class MyApp extends StatelessWidget {
         title: "CarSeek",
         routes: {
           AppRoutes.initial: (context) => const AuthScreen(),
-          AppRoutes.home: (context) => const AuthScreen(),
+          AppRoutes.home: (context) => const HomeScreen(),
         },
         initialRoute: AppRoutes.initial,
       ),
