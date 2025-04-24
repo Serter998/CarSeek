@@ -13,10 +13,6 @@ abstract class AuthRepository {
 
   Future<Either<Failure, Usuario>> login(String email, String password, bool rememberMe);
 
-  Future<Either<Failure, void>> cerrarSesion();
-
-  Future<Either<Failure, Usuario?>> getCurrentUser();
-
   Future<Either<Failure, Map<String, String?>>> loadCredentials();
 
   Future<Either<Failure, void>> resetPassword(String email);

@@ -1,15 +1,15 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:car_seek/share/data/models/usuario_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class AuthSource {
   Future<AuthResponse> register(String email, String password);
+  Future<void> createUser(UsuarioModel usuario);
   Future<AuthResponse> login(String email, String password, bool rememberMe);
-  Future<void> cerrarSesion();
-  User? getCurrentUser();
   Future<Map<String, String?>> loadCredentials();
   Future<void> resetPassword(String email);
 }
@@ -24,10 +24,16 @@ class AuthSourceImpl implements AuthSource {
 
   @override
   Future<AuthResponse> register(String email, String password) async {
+    await _storage.deleteAll();
     return await supabaseClient.auth.signUp(
       email: email,
       password: password,
     );
+  }
+
+  @override
+  Future<void> createUser(UsuarioModel usuario) async {
+    await supabaseClient.from('usuarios').insert(usuario.toJson());
   }
 
   @override
@@ -45,17 +51,6 @@ class AuthSourceImpl implements AuthSource {
       await _storage.delete(key: 'remembered_password');
     }
     return response;
-  }
-
-  @override
-  User? getCurrentUser() {
-    return supabaseClient.auth.currentUser;
-  }
-
-  @override
-  Future<void> cerrarSesion() async {
-    await supabaseClient.auth.signOut();
-    await _storage.deleteAll();
   }
 
   @override
