@@ -1,13 +1,12 @@
 import 'package:car_seek/core/errors/failure.dart';
-import 'package:car_seek/features/auth/domain/use_cases/cerrar_sesion_usecase.dart';
+import 'package:car_seek/share/domain/use_cases/usuario/cerrar_sesion_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/forgot_password_usecase.dart';
-import 'package:car_seek/features/auth/domain/use_cases/get_current_user_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/load_credentials_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/login_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/register_usecase.dart';
 import 'package:car_seek/share/domain/entities/usuario.dart';
+import 'package:car_seek/share/domain/use_cases/usuario/get_current_usuario_usecase.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -15,7 +14,7 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final RegisterUseCase _registerUseCase;
   final LoginUseCase _loginUseCase;
-  final GetCurrentUserUseCase _getCurrentUserUseCase;
+  final GetCurrentUsuarioUseCase _getCurrentUsuarioUseCase;
   final CerrarSesionUseCase _cerrarSesionUseCase;
   final LoadCredentialsUsecase _loadCredentialsUsecase;
   final ForgotPasswordUsecase _forgotPasswordUsecase;
@@ -23,7 +22,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(
       this._registerUseCase,
       this._loginUseCase,
-      this._getCurrentUserUseCase,
+      this._getCurrentUsuarioUseCase,
       this._cerrarSesionUseCase,
       this._loadCredentialsUsecase,
       this._forgotPasswordUsecase
@@ -79,11 +78,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<OnCheckUserLoginEvent>((event, emit) async {
       emit(AuthLoading());
 
-      final resp = await _getCurrentUserUseCase();
+      final resp = await _getCurrentUsuarioUseCase();
 
       resp.fold(
-            (f) => emit(AuthError(failure: f)),
-            (u) => u != null ? emit(AuthLoginSuccess(user: u)) : emit(AuthInitial()),
+            (f) => emit(AuthInitial()),
+            (u) => emit(AuthLoginSuccess(user: u)),
       );
     });
 

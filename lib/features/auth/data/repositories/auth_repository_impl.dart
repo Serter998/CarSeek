@@ -47,7 +47,7 @@ class AuthRepositoryImpl implements AuthRepository {
         ubicacion: ubicacion,
       );
 
-      await userSource.createUser(usuarioModel);
+      await authSource.createUser(usuarioModel);
       return Right(usuarioModel);
     } on AuthException catch (e) {
       if (e.toString().contains('SocketException') ||
@@ -114,82 +114,6 @@ class AuthRepositoryImpl implements AuthRepository {
       });
     } on TimeoutException {
       return const Left(TimeoutFailure());
-    } catch (e) {
-      return Left(ServerFailure(errorCode: 'unknown_error', statusCode: 500));
-    }
-  }
-
-  @override
-  Future<Either<Failure, void>> cerrarSesion() async {
-    try {
-      await authSource.cerrarSesion();
-      return const Right(null);
-    } on SocketException catch (_) {
-      return const Left(
-        NetworkFailure(errorCode: 'no_internet', statusCode: 503),
-      );
-    } on TimeoutException catch (_) {
-      return const Left(
-        TimeoutFailure(errorCode: 'logout_timeout', statusCode: 408),
-      );
-    } on AuthException catch (e) {
-      if (e.toString().contains('SocketException') ||
-          e.toString().contains('Failed host lookup')) {
-        return const Left(
-          NetworkFailure(errorCode: 'no_internet', statusCode: 503),
-        );
-      }
-      return Left(AuthFailure(customMessage: 'Error al cerrar la sesión'));
-    } catch (e) {
-      return Left(ServerFailure(errorCode: 'unknown_error', statusCode: 500));
-    }
-  }
-
-  @override
-  Future<Either<Failure, Usuario?>> getCurrentUser() async {
-    try {
-      final user = authSource.getCurrentUser();
-
-      if (user == null) {
-        return const Right(null);
-      }
-
-      final usuario = await userSource.getUserById(user.id);
-
-      if (usuario == null) {
-        return Left(
-          UserNotFoundFailure(
-            customMessage: 'Perfil de usuario no encontrado',
-            errorCode: 'profile_not_found',
-            statusCode: 404,
-          ),
-        );
-      }
-      return Right(usuario);
-    } on AuthException catch (e) {
-      if (e.toString().contains('SocketException') ||
-          e.toString().contains('Failed host lookup')) {
-        return const Left(
-          NetworkFailure(errorCode: 'no_internet', statusCode: 503),
-        );
-      }
-      return Left(AuthFailure(customMessage: 'Error al obtener el usuario'));
-    } on PostgrestException catch (e) {
-      return Left(
-        DatabaseFailure(
-          customMessage: 'Error al obtener datos del usuario',
-          errorCode: 'user_query_failed',
-          statusCode: 500,
-        ),
-      );
-    } on SocketException catch (_) {
-      return const Left(
-        NetworkFailure(errorCode: 'no_internet', statusCode: 503),
-      );
-    } on TimeoutException catch (_) {
-      return const Left(
-        TimeoutFailure(errorCode: 'user_fetch_timeout', statusCode: 408),
-      );
     } catch (e) {
       return Left(ServerFailure(errorCode: 'unknown_error', statusCode: 500));
     }

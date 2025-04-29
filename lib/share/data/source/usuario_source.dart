@@ -1,34 +1,25 @@
 import 'package:car_seek/share/data/models/usuario_model.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class UsuarioSource {
   Future<UsuarioModel?> getUserById(String id);
-
-  Future<List<UsuarioModel>> getAllUsers();
-
-  Future<void> createUser(UsuarioModel usuario);
-
+  Future<List<UsuarioModel>?> getAllUsers();
   Future<void> updateUser(UsuarioModel usuario);
-
   Future<void> deleteUser(String id);
+  Future<void> cerrarSesion();
+  Future<User?> getCurrentUser();
+  Future<UsuarioModel?> getCurrentUsuario();
 }
 
 class UsuarioSourceImpl implements UsuarioSource {
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
   final String _apiKey;
 
   UsuarioSourceImpl(this._apiKey);
 
-  final SupabaseClient supabaseClient = SupabaseClient(
-    dotenv.env['SUPABASE_URL']!,
-    dotenv.env['SUPABASE_KEY']!,
-    authOptions: const AuthClientOptions(authFlowType: AuthFlowType.implicit),
-  );
-
-  @override
-  Future<void> createUser(UsuarioModel usuario) async {
-    await supabaseClient.from('usuarios').insert(usuario.toJson());
-  }
+  final SupabaseClient supabaseClient = Supabase.instance.client;
 
   @override
   Future<void> deleteUser(String id) async {
@@ -37,7 +28,7 @@ class UsuarioSourceImpl implements UsuarioSource {
   }
 
   @override
-  Future<List<UsuarioModel>> getAllUsers() async {
+  Future<List<UsuarioModel>?> getAllUsers() async {
     final response = await supabaseClient.from('usuarios').select();
     return response.map((json) => UsuarioModel.fromJson(json)).toList();
   }
@@ -63,5 +54,26 @@ class UsuarioSourceImpl implements UsuarioSource {
         .from('usuarios')
         .update(usuario.toJson())
         .eq('id_usuario', usuario.id);
+  }
+
+  @override
+  Future<User?> getCurrentUser() async {
+    return supabaseClient.auth.currentUser;
+  }
+
+  @override
+  Future<void> cerrarSesion() async {
+    await supabaseClient.auth.signOut();
+    await _storage.deleteAll();
+  }
+
+  @override
+  Future<UsuarioModel?> getCurrentUsuario() async {
+    User? user = await getCurrentUser();
+    if(user != null) {
+      return await getUserById(user.id);
+    } else {
+      return null;
+    }
   }
 }
