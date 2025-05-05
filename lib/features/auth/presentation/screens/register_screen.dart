@@ -2,7 +2,7 @@ import 'package:car_seek/core/services/validation_service.dart';
 import 'package:car_seek/core/themes/dividers_styles.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/widgets/action_button.dart';
-import 'package:car_seek/features/auth/presentation/widgets/custom_snack_bar.dart';
+import 'package:car_seek/core/widgets/custom_snack_bar.dart';
 import 'package:car_seek/features/auth/presentation/widgets/redirect_text_button.dart';
 import 'package:car_seek/features/auth/presentation/widgets/text_fields.dart';
 import 'package:flutter/material.dart';

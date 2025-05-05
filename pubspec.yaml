@@ -12,6 +12,7 @@ dependencies:
 
   provider: ^6.1.4
   get_it: ^8.0.3
+  uuid: ^4.5.1
   #Programación funcional
   dartz: ^0.10.1
   # 🔗 Conexión con Supabase (Base de Datos y Autenticación)
@@ -31,7 +32,8 @@ dependencies:
   geolocator: ^10.1.0  # Obtener ubicación del usuario
 
   # 📦 Almacenamiento de Imágenes en Supabase
-  image_picker: ^1.0.7  # Seleccionar imágenes desde galería o cámara
+  image_picker: ^1.1.2  # Seleccionar imágenes desde galería o cámara
+  mime: ^2.0.0
   dio: ^5.4.1  # Manejar peticiones HTTP para subir imágenes
 
   # 📩 Chat en tiempo real (Usando Supabase Realtime)
@@ -56,3 +58,4 @@ flutter:
   assets:
     - .env
     - assets/images/CarSeekSinFondo.png
+    - assets/images/VentaVehiculo.png

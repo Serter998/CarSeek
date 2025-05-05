@@ -20,7 +20,7 @@ class NavigationWidget {
         ),
         BottomNavigationBarItem(
             icon: Icon(Icons.monetization_on),
-            key: Key(""),
+            key: Key(AppRoutes.sell),
             label: "Vender"
         ),
         BottomNavigationBarItem(
@@ -44,7 +44,7 @@ class NavigationWidget {
             NavigationService.navigateTo(context, AppRoutes.initial);
             break;
           case 2:
-            NavigationService.navigateTo(context, AppRoutes.initial);
+            NavigationService.navigateTo(context, AppRoutes.sell);
             break;
           case 3:
             NavigationService.navigateTo(context, AppRoutes.initial);
