@@ -96,7 +96,7 @@ class VehiculoRepositoryImpl implements VehiculoRepository {
   @override
   Future<Either<Failure, void>> updateVehiculo(Vehiculo vehiculo) async {
     try {
-      if (vehiculo.idVehiculo.isEmpty) {
+      if (vehiculo.idVehiculo!.isEmpty) {
         return Left(ValidationFailure(
           customMessage: 'ID de vehículo requerido',
           errorCode: 'missing_vehicle_id',

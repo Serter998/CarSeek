@@ -19,11 +19,7 @@ class VehiculoSourceImpl implements VehiculoSource {
 
   VehiculoSourceImpl(this._apiKey);
 
-  final SupabaseClient supabaseClient = SupabaseClient(
-    dotenv.env['SUPABASE_URL']!,
-    dotenv.env['SUPABASE_KEY']!,
-    authOptions: const AuthClientOptions(authFlowType: AuthFlowType.implicit),
-  );
+  final SupabaseClient supabaseClient = Supabase.instance.client;
 
   @override
   Future<void> createVehiculo(VehiculoModel vehiculo) async {
@@ -60,6 +56,6 @@ class VehiculoSourceImpl implements VehiculoSource {
     await supabaseClient
         .from('vehiculos')
         .update(vehiculo.toJson())
-        .eq('id_vehiculo', vehiculo.idVehiculo);
+        .eq('id_vehiculo', vehiculo.idVehiculo!);
   }
 }

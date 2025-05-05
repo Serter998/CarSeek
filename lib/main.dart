@@ -3,6 +3,8 @@ import 'package:car_seek/di.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/screens/auth_screen.dart';
 import 'package:car_seek/features/home/presentation/screens/home_screen.dart';
+import 'package:car_seek/features/sell/presentation/blocs/sell_bloc.dart';
+import 'package:car_seek/features/sell/presentation/screens/sell_screen.dart';
 import 'package:car_seek/supabase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,7 +35,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => GetIt.instance.get<AuthBloc>())
+        BlocProvider(create: (_) => GetIt.instance.get<AuthBloc>()),
+        BlocProvider(create: (_) => GetIt.instance.get<SellBloc>())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -42,6 +45,7 @@ class MyApp extends StatelessWidget {
         routes: {
           AppRoutes.initial: (context) => const AuthScreen(),
           AppRoutes.home: (context) => const HomeScreen(),
+          AppRoutes.sell: (context) => const SellScreen(),
         },
         initialRoute: AppRoutes.initial,
       ),
