@@ -1,8 +1,6 @@
-import 'package:car_seek/core/services/navigation_service.dart';
 import 'package:car_seek/core/themes/text_styles.dart';
 import 'package:car_seek/core/widgets/custom_snack_bar.dart';
 import 'package:car_seek/features/sell/presentation/blocs/sell_bloc.dart';
-import 'package:car_seek/features/sell/presentation/screens/sell_create_caracteristics_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -21,10 +19,6 @@ class _SellCreateTitleScreenState extends State<SellCreateTitleScreen> {
 
     if (titulo.isNotEmpty) {
       context.read<SellBloc>().add(OnSetTituloEvent(titulo: titulo));
-      /*NavigationService.navigateToWidget(
-        context,
-        SellCreateCaracteristicsScreen(titulo: titulo),
-      );*/
     } else {
       CustomSnackBar.showWarning(
         context: context,

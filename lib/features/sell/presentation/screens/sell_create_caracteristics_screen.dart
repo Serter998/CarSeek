@@ -1,8 +1,6 @@
-import 'package:car_seek/core/services/navigation_service.dart';
 import 'package:car_seek/core/themes/text_styles.dart';
 import 'package:car_seek/core/widgets/custom_snack_bar.dart';
 import 'package:car_seek/features/sell/presentation/blocs/sell_bloc.dart';
-import 'package:car_seek/features/sell/presentation/screens/sell_create_submit_screen.dart';
 import 'package:car_seek/share/domain/enums/tipo_combustible.dart';
 import 'package:car_seek/share/domain/enums/tipo_etiqueta.dart';
 import 'package:flutter/material.dart';

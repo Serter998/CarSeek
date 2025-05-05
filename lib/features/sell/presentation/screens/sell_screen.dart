@@ -1,7 +1,9 @@
 import 'package:car_seek/features/sell/presentation/blocs/sell_bloc.dart';
 import 'package:car_seek/features/sell/presentation/screens/sell_create_caracteristics_screen.dart';
 import 'package:car_seek/features/sell/presentation/screens/sell_create_submit_screen.dart';
+import 'package:car_seek/features/sell/presentation/screens/sell_create_success_screen.dart';
 import 'package:car_seek/features/sell/presentation/screens/sell_create_title_screen.dart';
+import 'package:car_seek/features/sell/presentation/screens/sell_error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -65,9 +67,9 @@ class SellScreen extends StatelessWidget {
                 descripcion: (state).descripcion,
               );
             case const (SellCreateSuccess):
-              return SellCreateTitleScreen();
+              return SellCreateSuccessScreen();
             case const (SellError):
-              return SellCreateCaracteristicsScreen(titulo: "Fallo");
+              return SellErrorScreen(failure: (state as SellError).failure,);
             default:
               return const Center(child: Text("Estado no contemplado"));
           }

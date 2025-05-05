@@ -8,7 +8,6 @@ import 'package:car_seek/share/domain/entities/vehiculo.dart';
 import 'package:car_seek/share/domain/enums/tipo_combustible.dart';
 import 'package:car_seek/share/domain/enums/tipo_etiqueta.dart';
 import 'package:car_seek/share/domain/use_cases/usuario/get_current_user_usecase.dart';
-import 'package:car_seek/share/domain/use_cases/usuario/get_current_usuario_usecase.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
