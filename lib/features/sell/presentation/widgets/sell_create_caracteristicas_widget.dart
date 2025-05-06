@@ -93,7 +93,7 @@ class SellCreateCaracteristicsCard extends StatelessWidget {
             // Tipo de combustible
             _buildDropdownItem(
                 Icons.local_gas_station,
-                'Selecciona el tipo de combustible*',
+                'Combustible*',
                 TipoCombustible.values,
                 combustibleSeleccionado,
                 onCombustibleChanged,
@@ -113,7 +113,7 @@ class SellCreateCaracteristicsCard extends StatelessWidget {
             // Tipo de etiqueta
             _buildDropdownItem(
                 Icons.eco,
-                'Selecciona el tipo de etiqueta*',
+                'Etiqueta*',
                 TipoEtiqueta.values,
                 etiquetaSeleccionada,
                 onEtiquetaChanged,

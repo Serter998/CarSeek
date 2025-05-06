@@ -233,7 +233,7 @@ class _SellCreateSubmitScreenState extends State<SellCreateSubmitScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -255,7 +255,7 @@ class _SellCreateSubmitScreenState extends State<SellCreateSubmitScreen> {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 elevation: 2,
-                margin: const EdgeInsets.only(bottom: 24),
+                margin: const EdgeInsets.symmetric(horizontal: 6),
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
