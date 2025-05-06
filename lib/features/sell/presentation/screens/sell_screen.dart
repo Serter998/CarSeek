@@ -13,7 +13,7 @@ class SellScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      BlocProvider.of<SellBloc>(context).add(ResetSellEvent());
+      BlocProvider.of<SellBloc>(context).add(OnResetSellEvent());
     });
 
     return Scaffold(
@@ -49,10 +49,18 @@ class SellScreen extends StatelessWidget {
             case const (SellLoading):
               return const Center(child: CircularProgressIndicator());
             case const (SellCreate):
-              return SellCreateTitleScreen();
+              return SellCreateTitleScreen(titulo: (state as SellCreate).titulo,);
             case const (SellCreateTitulo):
               return SellCreateCaracteristicsScreen(
                 titulo: (state as SellCreateTitulo).titulo,
+                marca: (state).marca,
+                modelo: (state).modelo,
+                anio: (state).anio,
+                km: (state).km,
+                tipoCombustible: (state).combustibleSeleccionado,
+                cv: (state).cv,
+                tipoEtiqueta: (state).tipoEtiqueta,
+                descripcion: (state).descripcion,
               );
             case const (SellCreateCaracteristicas):
               return SellCreateSubmitScreen(
