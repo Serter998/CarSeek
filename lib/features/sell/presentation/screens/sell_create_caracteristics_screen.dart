@@ -1,16 +1,23 @@
-import 'package:car_seek/core/themes/text_styles.dart';
 import 'package:car_seek/core/widgets/custom_snack_bar.dart';
 import 'package:car_seek/features/sell/presentation/blocs/sell_bloc.dart';
+import 'package:car_seek/features/sell/presentation/widgets/sell_create_caracteristicas_widget.dart';
 import 'package:car_seek/share/domain/enums/tipo_combustible.dart';
 import 'package:car_seek/share/domain/enums/tipo_etiqueta.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SellCreateCaracteristicsScreen extends StatefulWidget {
   final String titulo;
+  final String? marca;
+  final String? modelo;
+  final int? anio;
+  final int? km;
+  final TipoCombustible? tipoCombustible;
+  final int? cv;
+  final TipoEtiqueta? tipoEtiqueta;
+  final String? descripcion;
 
-  const SellCreateCaracteristicsScreen({super.key, required this.titulo});
+  const SellCreateCaracteristicsScreen({super.key, required this.titulo, this.marca, this.modelo, this.anio, this.km, this.tipoCombustible, this.cv, this.tipoEtiqueta, this.descripcion});
 
   @override
   State<SellCreateCaracteristicsScreen> createState() =>
@@ -27,6 +34,35 @@ class _SellCreateCaracteristicsScreenState
   final TextEditingController _cvController = TextEditingController();
   TipoEtiqueta? _etiquetaSeleccionada;
   final TextEditingController _descripcionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.marca != null) _marcaController.text = widget.marca!;
+    if (widget.modelo != null) _modeloController.text = widget.modelo!;
+    if (widget.anio != null) _anioController.text = widget.anio!.toString();
+    if (widget.km != null) _kmController.text = widget.km!.toString();
+    if (widget.tipoCombustible != null) _combustibleSeleccionado = widget.tipoCombustible;
+    if (widget.cv != null) _cvController.text = widget.cv!.toString();
+    if (widget.tipoEtiqueta != null) _etiquetaSeleccionada = widget.tipoEtiqueta;
+    if (widget.descripcion != null) _descripcionController.text = widget.descripcion!;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _marcaController.dispose();
+    _modeloController.dispose();
+    _anioController.dispose();
+    _kmController.dispose();
+    _cvController.dispose();
+    _descripcionController.dispose();
+  }
+
+  void _volver() {
+    context.read<SellBloc>().add(OnVolverTitleSellEvent(widget.titulo));
+  }
 
   void _continuar() {
     final titulo = widget.titulo;
@@ -48,19 +84,31 @@ class _SellCreateCaracteristicsScreenState
       cvTexto,
       tipoEtiqueta,
     )) {
+
       try {
         final anio = int.parse(anioTexto);
         final km = int.parse(kmTexto);
         final cv = int.parse(cvTexto);
-        context.read<SellBloc>().add(OnSetCaracteristicasEvent(titulo: titulo,
-            marca: marca,
-            modelo: modelo,
-            anio: anio,
-            km: km,
-            combustibleSeleccionado: combustibleSeleccionado!,
-            cv: cv,
-            tipoEtiqueta: tipoEtiqueta!,
-            descripcion: descripcion));
+        if (anio > 1900 && anio < DateTime.now().year + 1) {
+          context.read<SellBloc>().add(
+            OnSetCaracteristicasEvent(
+              titulo: titulo,
+              marca: marca,
+              modelo: modelo,
+              anio: anio,
+              km: km,
+              combustibleSeleccionado: combustibleSeleccionado!,
+              cv: cv,
+              tipoEtiqueta: tipoEtiqueta!,
+              descripcion: descripcion,
+            ),
+          );
+        } else {
+          CustomSnackBar.showWarning(
+            context: context,
+            message: "Debes introducir un año entre 1901 y el ${DateTime.now().year}.",
+          );
+        }
       } catch (e) {
         CustomSnackBar.showError(
           context: context,
@@ -75,13 +123,15 @@ class _SellCreateCaracteristicsScreenState
     }
   }
 
-  bool isDataNotEmpty(String marca,
-      String modelo,
-      String anio,
-      String km,
-      TipoCombustible? combustibleSeleccionado,
-      String cv,
-      TipoEtiqueta? tipoEtiqueta,) {
+  bool isDataNotEmpty(
+    String marca,
+    String modelo,
+    String anio,
+    String km,
+    TipoCombustible? combustibleSeleccionado,
+    String cv,
+    TipoEtiqueta? tipoEtiqueta,
+  ) {
     return marca.isNotEmpty &&
         modelo.isNotEmpty &&
         anio.isNotEmpty &&
@@ -100,165 +150,31 @@ class _SellCreateCaracteristicsScreenState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: Column(
-                  children: [
-                    Text(
-                      "Rellene las características de su vehículo",
-                      style: TextStyles.titleText,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "Debes introducir valores reales, sino podrás ser baneado.",
-                      style: TextStyles.subtitleText,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // Agrupación de campos
-              _buildInputField(
-                  _marcaController, 'Escribe la marca del vehículo aquí*'),
-              const SizedBox(height: 24),
-
-              _buildInputField(
-                  _modeloController, 'Escribe el modelo del vehículo aquí*'),
-              const SizedBox(height: 24),
-
-              _buildInputField(
-                _anioController,
-                'Escribe el año del vehículo aquí*',
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(4),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              _buildInputField(
-                _kmController,
-                'Escribe los km del vehículo aquí*',
-                keyboardType: TextInputType.number,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              ),
-              const SizedBox(height: 24),
-
-              DropdownButtonFormField<TipoCombustible>(
-                value: _combustibleSeleccionado,
-                onChanged: (TipoCombustible? newValue) {
+              SellCreateCaracteristicsCard(
+                marcaController: _marcaController,
+                modeloController: _modeloController,
+                anioController: _anioController,
+                kmController: _kmController,
+                combustibleSeleccionado: _combustibleSeleccionado,
+                cvController: _cvController,
+                etiquetaSeleccionada: _etiquetaSeleccionada,
+                descripcionController: _descripcionController,
+                onCombustibleChanged: (newValue) {
                   setState(() {
                     _combustibleSeleccionado = newValue;
                   });
                 },
-                decoration: _dropdownDecoration(
-                    'Selecciona el tipo de combustible*'),
-                items: TipoCombustible.values.map((tipo) {
-                  return DropdownMenuItem<TipoCombustible>(
-                    value: tipo,
-                    child: Text(tipo.name),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 24),
-
-              _buildInputField(
-                _cvController,
-                'Escribe los cv del vehículo aquí*',
-                keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                  LengthLimitingTextInputFormatter(4),
-                ],
-              ),
-              const SizedBox(height: 24),
-
-              DropdownButtonFormField<TipoEtiqueta>(
-                value: _etiquetaSeleccionada,
-                onChanged: (TipoEtiqueta? newValue) {
+                onEtiquetaChanged: (newValue) {
                   setState(() {
                     _etiquetaSeleccionada = newValue;
                   });
                 },
-                decoration: _dropdownDecoration(
-                    'Selecciona el tipo de etiqueta*'),
-                items: TipoEtiqueta.values.map((tipo) {
-                  return DropdownMenuItem<TipoEtiqueta>(
-                    value: tipo,
-                    child: Text(tipo.name),
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 24),
-
-              TextField(
-                controller: _descripcionController,
-                maxLines: 6,
-                style: const TextStyle(fontSize: 16),
-                decoration: InputDecoration(
-                  labelText:
-                  'Aquí puedes especificar detalles de tu vehículo, como si tiene algún problema el vehículo, alguna modificación, etc...',
-                  alignLabelWithHint: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  onPressed: _continuar,
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
-                  child: const Text(
-                    'Continuar',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                  ),
-                ),
+                onVolver: _volver,
+                onSave: _continuar,
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  InputDecoration _dropdownDecoration(String label) {
-    return InputDecoration(
-      labelText: label,
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-    );
-  }
-
-  Widget _buildInputField(TextEditingController controller,
-      String label, {
-        TextInputType? keyboardType,
-        List<TextInputFormatter>? inputFormatters,
-      }) {
-    return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-            horizontal: 12, vertical: 14),
       ),
     );
   }

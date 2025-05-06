@@ -61,7 +61,7 @@ class SellErrorScreen extends StatelessWidget {
               padding: const EdgeInsets.only(top: 16.0),
               child: RedirectTextButton(
                 function: () {
-                  context.read<SellBloc>().add(ResetSellEvent());
+                  context.read<SellBloc>().add(OnResetSellEvent());
                 },
                 text: "Volver a hacer la venta",
               ),

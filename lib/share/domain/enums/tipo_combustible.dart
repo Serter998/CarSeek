@@ -1,4 +1,25 @@
-enum TipoCombustible { gasolina, diesel, hibrido, hibrido_enchufable, electrico}
+enum TipoCombustible {
+  gasolina,
+  diesel,
+  hibrido,
+  hibrido_enchufable,
+  electrico;
+
+  String get nombre {
+    switch (this) {
+      case TipoCombustible.gasolina:
+        return 'Gasolina';
+      case TipoCombustible.diesel:
+        return 'Diesel';
+      case TipoCombustible.hibrido:
+        return 'Híbrido';
+      case TipoCombustible.hibrido_enchufable:
+        return 'Híbrido enchufable';
+      case TipoCombustible.electrico:
+        return 'Eléctrico';
+    }
+  }
+}
 
 extension TipoCombustibleExtension on TipoCombustible {
   String get name {

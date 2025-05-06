@@ -44,8 +44,28 @@ class SellBloc extends Bloc<SellEvent, SellState> {
       );
     });
 
-    on<ResetSellEvent>((event, emit) {
+    on<OnResetSellEvent>((event, emit) {
       emit(SellCreate());
+    });
+
+    on<OnVolverTitleSellEvent>((event, emit) {
+      emit(SellCreate(titulo: event.titulo));
+    });
+
+    on<OnVolverCaracteristicasSellEvent>((event, emit) {
+      emit(
+        SellCreateTitulo(
+          titulo: event.titulo,
+          modelo: event.modelo,
+          marca: event.marca,
+          km: event.km,
+          tipoEtiqueta: event.tipoEtiqueta,
+          cv: event.cv,
+          combustibleSeleccionado: event.tipoCombustible,
+          anio: event.anio,
+          descripcion: event.descripcion,
+        ),
+      );
     });
   }
 }

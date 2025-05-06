@@ -1,4 +1,3 @@
-import 'package:car_seek/features/sell/presentation/blocs/sell_bloc.dart';
 import 'package:flutter/material.dart';
 
 class SellCreateSuccessScreen extends StatelessWidget {

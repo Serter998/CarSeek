@@ -1,4 +1,17 @@
-enum TipoEtiqueta { eco, c, b, sin_etiqueta }
+enum TipoEtiqueta { eco, c, b, sin_etiqueta;
+
+  String get nombre {
+    switch (this) {
+      case TipoEtiqueta.eco:
+        return 'Eco';
+      case TipoEtiqueta.c:
+        return 'C';
+      case TipoEtiqueta.b:
+        return 'B';
+      case TipoEtiqueta.sin_etiqueta:
+        return 'Sin etiqueta';
+    }
+  }}
 
 extension TipoEtiquetaExtension on TipoEtiqueta {
   String get name {
