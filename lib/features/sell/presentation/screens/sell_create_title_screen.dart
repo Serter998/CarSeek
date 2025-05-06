@@ -49,7 +49,7 @@ class _SellCreateTitleScreenState extends State<SellCreateTitleScreen> {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 20),
           child: Center(
             child: Card(
               shape: RoundedRectangleBorder(

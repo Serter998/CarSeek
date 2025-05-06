@@ -1,3 +1,5 @@
+import 'package:car_seek/share/domain/enums/tipo_combustible.dart';
+import 'package:car_seek/share/domain/enums/tipo_etiqueta.dart';
 import 'package:flutter/material.dart';
 
 class DetalleVehiculoWidget extends StatelessWidget {
@@ -8,8 +10,8 @@ class DetalleVehiculoWidget extends StatelessWidget {
   final String km;
   final String cv;
   final String descripcion;
-  final Enum tipoCombustible;
-  final Enum tipoEtiqueta;
+  final TipoCombustible tipoCombustible;
+  final TipoEtiqueta tipoEtiqueta;
 
   const DetalleVehiculoWidget({
     super.key,
@@ -46,9 +48,9 @@ class DetalleVehiculoWidget extends StatelessWidget {
                 _buildInfoItem(Icons.model_training, "Modelo", modelo),
                 _buildInfoItem(Icons.calendar_today, "Año", anio),
                 _buildInfoItem(Icons.speed, "Kilómetros", km),
-                _buildInfoItem(Icons.local_gas_station, "Combustible", tipoCombustible.name),
+                _buildInfoItem(Icons.local_gas_station, "Combustible", tipoCombustible.nombre),
                 _buildInfoItem(Icons.electric_bolt, "CV", cv),
-                _buildInfoItem(Icons.eco, "Etiqueta", tipoEtiqueta.name),
+                _buildInfoItem(Icons.eco, "Etiqueta", tipoEtiqueta.nombre),
 
                 const SizedBox(height: 16),
                 // Descripción alineada a la izquierda
