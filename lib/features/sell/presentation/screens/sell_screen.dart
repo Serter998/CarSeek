@@ -19,7 +19,7 @@ class SellScreen extends StatelessWidget {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.pop(context); // Acción al presionar
+            Navigator.pop(context);
           },
           icon: Icon(Icons.close),
         ),

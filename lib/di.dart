@@ -1,6 +1,7 @@
 import 'package:car_seek/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:car_seek/features/auth/data/sources/auth_source.dart';
 import 'package:car_seek/features/auth/domain/repositories/auth_repository.dart';
+import 'package:car_seek/features/home/presentation/blocs/vehicle_list_bloc.dart';
 import 'package:car_seek/features/sell/presentation/blocs/sell_bloc.dart';
 import 'package:car_seek/share/data/repositories/vehiculo_repository_impl.dart';
 import 'package:car_seek/share/data/source/vehiculo_source.dart';
@@ -26,6 +27,7 @@ import 'package:car_seek/share/domain/use_cases/vehicles/delete_vehiculo_usecase
 import 'package:car_seek/share/domain/use_cases/vehicles/get_all_vehiculos_usecase.dart';
 import 'package:car_seek/share/domain/use_cases/vehicles/get_vehiculo_by_id_usecase.dart';
 import 'package:car_seek/share/domain/use_cases/vehicles/get_vehiculos_destacados_usecase.dart';
+import 'package:car_seek/share/domain/use_cases/vehicles/get_vehiculos_filtrados_usecase.dart';
 import 'package:car_seek/share/domain/use_cases/vehicles/search_vehiculos_usecase.dart';
 import 'package:car_seek/share/domain/use_cases/vehicles/update_vehiculo_usecase.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -72,7 +74,7 @@ Future<void> init() async {
     di<GetCurrentUsuarioUseCase>(),
     di<CerrarSesionUseCase>(),
     di<LoadCredentialsUsecase>(),
-    di<ForgotPasswordUsecase>()
+    di<ForgotPasswordUsecase>(),
   ));
 
   /*-------------
@@ -100,15 +102,6 @@ Future<void> init() async {
   /*-------------
    * Inicio de Vehiculos
    * -------------*/
-  // Use cases
-  di.registerLazySingleton(() => CreateVehiculoUseCase(repository: di()));
-  di.registerLazySingleton(() => DeleteVehiculoUseCase(repository: di()));
-  di.registerLazySingleton(() => GetAllVehiculosUseCase(repository: di()));
-  di.registerLazySingleton(() => GetVehiculoByIdUseCase(repository: di()));
-  di.registerLazySingleton(() => GetVehiculosDestacadosUseCase(repository: di()));
-  di.registerLazySingleton(() => SearchVehiculosUseCase(repository: di()));
-  di.registerLazySingleton(() => UpdateVehiculoUseCase(repository: di()));
-
   // Repositories
   di.registerLazySingleton<VehiculoRepository>(
         () => VehiculoRepositoryImpl(vehiculoSource: di()),
@@ -119,11 +112,27 @@ Future<void> init() async {
         () => VehiculoSourceImpl(dotenv.env['API_KEY'] ?? ''),
   );
 
+  // Use cases
+  di.registerLazySingleton(() => CreateVehiculoUseCase(repository: di()));
+  di.registerLazySingleton(() => DeleteVehiculoUseCase(repository: di()));
+  di.registerLazySingleton(() => GetAllVehiculosUseCase(repository: di()));
+  di.registerLazySingleton(() => GetVehiculoByIdUseCase(repository: di()));
+  di.registerLazySingleton(() => GetVehiculosDestacadosUseCase(repository: di()));
+  di.registerLazySingleton(() => SearchVehiculosUseCase(repository: di()));
+  di.registerLazySingleton(() => UpdateVehiculoUseCase(repository: di()));
+  di.registerLazySingleton(() => GetVehiculosFiltradosUseCase(repository: di()));
+
+  // Bloc
+  di.registerFactory(() => VehicleListBloc(
+    di<GetAllVehiculosUseCase>(),
+    di<GetVehiculosFiltradosUseCase>(),
+  ));
+
   /*-------------
    * Inicio de Sell
    * -------------*/
   // Bloc
   di.registerFactory(() => SellBloc(
-      di<CreateVehiculoUseCase>(),
+    di<CreateVehiculoUseCase>(),
   ));
 }

@@ -6,6 +6,7 @@ import 'package:car_seek/core/errors/validation_failures.dart';
 import 'package:car_seek/share/data/models/vehiculo_model.dart';
 import 'package:car_seek/share/data/source/vehiculo_source.dart';
 import 'package:car_seek/share/domain/entities/vehiculo.dart';
+import 'package:car_seek/share/domain/enums/filtro_vehiculo.dart';
 import 'package:car_seek/share/domain/repositories/vehiculo_repository.dart';
 import 'package:dartz/dartz.dart';
 
@@ -203,4 +204,54 @@ class VehiculoRepositoryImpl implements VehiculoRepository {
       ));
     }
   }
+
+  @override
+  Future<Either<Failure, List<Vehiculo>>> getVehiculosFiltrados(String query, FiltroVehiculo? filtro) async {
+    try {
+      final vehiculos = await vehiculoSource.getAllVehiculos();
+
+      var filtrados = vehiculos.where((v) =>
+      v.titulo.toLowerCase().contains(query.toLowerCase()) ||
+          v.marca.toLowerCase().contains(query.toLowerCase()) ||
+          v.modelo.toLowerCase().contains(query.toLowerCase())
+      ).toList();
+
+      if (filtro != null) {
+        switch (filtro) {
+          case FiltroVehiculo.verificados:
+            filtrados = filtrados.where((v) => v.verificado == true).toList();
+            break;
+          case FiltroVehiculo.precioAsc:
+            filtrados.sort((a, b) => a.precio.compareTo(b.precio));
+            break;
+          case FiltroVehiculo.precioDesc:
+            filtrados.sort((a, b) => b.precio.compareTo(a.precio));
+            break;
+          case FiltroVehiculo.anioAsc:
+            filtrados.sort((a, b) => a.anio.compareTo(b.anio));
+            break;
+          case FiltroVehiculo.anioDesc:
+            filtrados.sort((a, b) => b.anio.compareTo(a.anio));
+            break;
+          case FiltroVehiculo.kilometrosAsc:
+            filtrados.sort((a, b) => a.kilometros.compareTo(b.kilometros));
+            break;
+          default:
+            break;
+        }
+      }
+
+      return Right(filtrados);
+    } on TimeoutException {
+      return Left(TimeoutFailure());
+    } on SocketException {
+      return Left(NetworkFailure());
+    } catch (e) {
+      return Left(DatabaseFailure(
+        customMessage: 'Error al obtener vehículos filtrados: ${e.toString()}',
+        errorCode: 'vehicle_filter_error',
+      ));
+    }
+  }
+
 }

@@ -1,4 +1,6 @@
 import 'package:car_seek/share/domain/entities/vehiculo.dart';
+import 'package:car_seek/share/domain/enums/tipo_combustible.dart';
+import 'package:car_seek/share/domain/enums/tipo_etiqueta.dart';
 
 class VehiculoModel extends Vehiculo {
   VehiculoModel({
@@ -31,13 +33,19 @@ class VehiculoModel extends Vehiculo {
       modelo: json['modelo'],
       anio: json['anio'],
       kilometros: json['kilometros'],
-      tipoCombustible: json['tipo_combustible'],
+      tipoCombustible: TipoCombustible.values.firstWhere(
+            (e) => e.name == json['tipo_combustible'],
+        orElse: () => TipoCombustible.gasolina,
+      ),
       cv: json['cv'],
-      tipoEtiqueta: json['tipo_etiqueta'],
+      tipoEtiqueta: TipoEtiqueta.values.firstWhere(
+            (e) => e.name == json['tipo_etiqueta'],
+        orElse: () => TipoEtiqueta.c,
+      ),
       precio: json['precio'].toDouble(),
       ubicacion: json['ubicacion'],
       descripcion: json['descripcion'],
-      imagenes: json['imagenes'],
+      imagenes: List<String>.from(json['imagenes'] ?? []),
       destacado: json['destacado'] ?? false,
       verificado: json['verificado'] ?? false,
       fechaCreacion: DateTime.parse(json['fecha_creacion']),

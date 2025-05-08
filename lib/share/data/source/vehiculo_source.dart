@@ -33,8 +33,17 @@ class VehiculoSourceImpl implements VehiculoSource {
 
   @override
   Future<List<VehiculoModel>> getAllVehiculos() async {
-    final response = await supabaseClient.from('vehiculos').select();
-    return response.map((json) => VehiculoModel.fromJson(json)).toList();
+    try {
+      final List<dynamic> result = await supabaseClient
+          .from('vehiculos')
+          .select();
+
+      return result.map((json) => VehiculoModel.fromJson(json)).toList();
+    } catch (e, stackTrace) {
+      print('❌ Error al obtener vehículos: $e');
+      print('📍 StackTrace: $stackTrace');
+      rethrow; // Esto relanza el error para que puedas manejarlo arriba si quieres
+    }
   }
 
   @override
