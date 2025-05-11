@@ -2,6 +2,7 @@ import 'package:car_seek/core/themes/app_theme.dart';
 import 'package:car_seek/di.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/screens/auth_screen.dart';
+import 'package:car_seek/features/home/presentation/blocs/vehicle_list_bloc.dart';
 import 'package:car_seek/features/home/presentation/screens/home_screen.dart';
 import 'package:car_seek/features/sell/presentation/blocs/sell_bloc.dart';
 import 'package:car_seek/features/sell/presentation/screens/sell_screen.dart';
@@ -36,7 +37,8 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => GetIt.instance.get<AuthBloc>()),
-        BlocProvider(create: (_) => GetIt.instance.get<SellBloc>())
+        BlocProvider(create: (_) => GetIt.instance.get<SellBloc>()),
+        BlocProvider(create: (_) => GetIt.instance.get<VehicleListBloc>()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

@@ -26,6 +26,8 @@ dependencies:
   flutter_secure_storage: ^9.0.0  # Almacenar datos sensibles
   crypto: ^3.0.6 #Cifrar datos
   flutter_dotenv: ^5.0.2
+  lucide_icons: ^0.257.0
+
 
   # 📍 Mapas y Ubicación
   google_maps_flutter: ^2.5.0  # Google Maps para mostrar vehículos
