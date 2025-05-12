@@ -23,8 +23,9 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
     setState(() => isFavorite = !isFavorite);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-            isFavorite ? '¡Vehículo añadido a favoritos!' : '¡Vehículo eliminado de favoritos'),
+        content: Text(isFavorite
+            ? '¡Vehículo añadido a favoritos!'
+            : '¡Vehículo eliminado de favoritos'),
         backgroundColor: AppColors.primary,
         duration: const Duration(seconds: 2),
       ),
@@ -52,8 +53,8 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
       body: SingleChildScrollView(
         padding: EdgeInsets.all(isWide ? 32 : 16),
         child: Center(
-          child: Container(
-            width: isWide ? 900 : double.infinity,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 900),
             child: Card(
               elevation: isWide ? 2 : 4,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -62,6 +63,21 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (isWide) ...[
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton.icon(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          label: const Text(
+                            'Volver',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+
                     if (vehiculo.imagenes.isNotEmpty)
                       isWide
                           ? Stack(
@@ -98,18 +114,21 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
 
                     Text(
                       vehiculo.titulo,
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primary),
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primary,
+                      ),
                     ),
                     const SizedBox(height: 6),
                     Text(
                       '${vehiculo.marca} ${vehiculo.modelo}',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
-
                     const SizedBox(height: 20),
                     Text(
                       '${vehiculo.anio} • ${vehiculo.kilometros} km',
@@ -125,6 +144,7 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
+
                     Wrap(
                       spacing: 12,
                       runSpacing: 12,
@@ -142,7 +162,9 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
                           VehicleInfoChip(icon: Icons.location_on, text: vehiculo.ubicacion!),
                       ],
                     ),
+
                     const SizedBox(height: 24),
+
                     if (vehiculo.descripcion != null && vehiculo.descripcion!.isNotEmpty)
                       Container(
                         width: double.infinity,
