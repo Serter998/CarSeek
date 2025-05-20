@@ -1,6 +1,12 @@
 import 'package:car_seek/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:car_seek/features/auth/data/sources/auth_source.dart';
 import 'package:car_seek/features/auth/domain/repositories/auth_repository.dart';
+import 'package:car_seek/features/%20favorites/data/repositories/favorite_vehicle_repository_impl.dart';
+import 'package:car_seek/features/%20favorites/domain/repositories/favorite_vehicle_repository.dart';
+import 'package:car_seek/features/%20favorites/domain/use_cases/get_favorites_usecase.dart';
+import 'package:car_seek/features/%20favorites/domain/use_cases/is_favorite_usecase.dart';
+import 'package:car_seek/features/%20favorites/domain/use_cases/toggle_favorite_usecase.dart';
+import 'package:car_seek/features/%20favorites/presentation/blocs/favorite_vehicles_bloc.dart';
 import 'package:car_seek/features/home/presentation/blocs/vehicle_list_bloc.dart';
 import 'package:car_seek/features/sell/presentation/blocs/sell_bloc.dart';
 import 'package:car_seek/share/data/repositories/vehiculo_repository_impl.dart';
@@ -112,6 +118,8 @@ Future<void> init() async {
         () => VehiculoSourceImpl(dotenv.env['API_KEY'] ?? ''),
   );
 
+
+
   // Use cases
   di.registerLazySingleton(() => CreateVehiculoUseCase(repository: di()));
   di.registerLazySingleton(() => DeleteVehiculoUseCase(repository: di()));
@@ -122,11 +130,34 @@ Future<void> init() async {
   di.registerLazySingleton(() => UpdateVehiculoUseCase(repository: di()));
   di.registerLazySingleton(() => GetVehiculosFiltradosUseCase(repository: di()));
 
+  /*-------------
+ * Inicio de Favoritos
+ * -------------*/
+// Repositorio
+  di.registerLazySingleton<FavoriteVehicleRepository>(
+        () => FavoriteVehicleRepositoryImpl(),
+  );
+
+// Casos de uso
+  di.registerLazySingleton(() => GetFavoritesUseCase(repository: di()));
+  di.registerLazySingleton(() => ToggleFavoriteUseCase(repository: di()));
+  di.registerLazySingleton(() => IsFavoriteUseCase(repository: di()));
+
+  // Bloc de favoritos (o el que corresponda)
+  di.registerFactory(() => FavoriteVehiclesBloc(
+    toggleFavoriteUseCase: di<ToggleFavoriteUseCase>(),
+    getFavoritesUseCase: di<GetFavoritesUseCase>(),
+    isFavoriteUseCase: di<IsFavoriteUseCase>(),
+  ));
+
+
   // Bloc
   di.registerFactory(() => VehicleListBloc(
     di<GetAllVehiculosUseCase>(),
     di<GetVehiculosFiltradosUseCase>(),
   ));
+
+
 
   /*-------------
    * Inicio de Sell
