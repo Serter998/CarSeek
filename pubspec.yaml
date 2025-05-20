@@ -46,6 +46,7 @@ dependencies:
   # 🎨 UI y Animaciones
   lottie: ^2.7.0  # Animaciones
   cached_network_image: ^3.3.1  # Cargar imágenes con caché
+  visibility_detector: ^0.4.0+2
 
   # 🐞 Debugging
   fluttertoast: ^8.2.5  # Mostrar mensajes en pantalla

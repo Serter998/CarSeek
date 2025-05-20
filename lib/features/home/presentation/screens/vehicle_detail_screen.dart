@@ -205,19 +205,18 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
                         ),
                       ),
 
-                    if (isWide) ...[
-                      const SizedBox(height: 32),
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          minimumSize: const Size.fromHeight(50),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        icon: const Icon(Icons.chat),
-                        label: const Text('Contactar con el vendedor'),
-                        onPressed: () {},
+                    const SizedBox(height: 32),
+                    ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.primary,
+                        minimumSize: const Size.fromHeight(50),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
-                    ],
+                      icon: const Icon(Icons.chat),
+                      label: const Text('Contactar con el vendedor'),
+                      onPressed: () {
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -225,21 +224,6 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: !isWide
-          ? Padding(
-        padding: const EdgeInsets.all(12),
-        child: ElevatedButton.icon(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primary,
-            minimumSize: const Size.fromHeight(50),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          ),
-          icon: const Icon(Icons.chat),
-          label: const Text('Contactar con el vendedor'),
-          onPressed: () {},
-        ),
-      )
-          : null,
     );
   }
 }

@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:car_seek/core/constants/app_colors.dart';
 import 'package:car_seek/core/navigation/navigation_widget.dart';
+import 'package:car_seek/features/%20favorites/presentation/blocs/favorite_vehicles_bloc.dart';
 import 'package:car_seek/features/home/presentation/blocs/vehicle_list_bloc.dart';
 import 'package:car_seek/features/home/presentation/screens/vehicle_detail_screen.dart';
 import 'package:car_seek/features/home/presentation/widgets/filtro_activo_widget.dart';
@@ -19,20 +21,33 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
-  final Set<String> _favorites = {};
   FiltroVehiculo? _filtroSeleccionado;
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-    context.read<VehicleListBloc>().add(LoadAllVehiculosEvent());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<VehicleListBloc>().add(LoadAllVehiculosEvent());
+    });
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _searchController.dispose();
+    super.dispose();
   }
 
   void _onSearch(String value) {
-    context.read<VehicleListBloc>().add(FilterVehiculosEvent(
-      query: value,
-      filtro: _filtroSeleccionado,
-    ));
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      if(!mounted) return;
+      context.read<VehicleListBloc>().add(FilterVehiculosEvent(
+        query: value,
+        filtro: _filtroSeleccionado,
+      ));
+    });
   }
 
   void _onFiltroSeleccionado(FiltroVehiculo filtro) {
@@ -55,9 +70,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.car_rental),
+        leading: Icon(
+           (Icons.car_rental),
         ),
         title: const Text('CarSeek'),
         backgroundColor: AppColors.primary,
@@ -97,40 +111,65 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
 
           Expanded(
-            child: BlocBuilder<VehicleListBloc, VehicleListState>(
-              builder: (context, state) {
-                if (state is VehicleListLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is VehicleListLoaded) {
-                  return ResponsiveVehicleGrid(
-                    vehiculos: state.vehiculos,
-                    itemBuilder: (vehiculo) => MarketplaceVehicleCard(
-                      vehiculo: vehiculo,
-                      isFavorite: _favorites.contains(vehiculo.idVehiculo),
-                      onToggleFavorite: () {
-                        setState(() {
-                          if (_favorites.contains(vehiculo.idVehiculo)) {
-                            _favorites.remove(vehiculo.idVehiculo);
-                          } else {
-                            _favorites.add(vehiculo.idVehiculo);
-                          }
-                        });
-                      },
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => VehicleDetailScreen(vehiculo: vehiculo),
-                            ),
+            child: MultiBlocListener(
+              listeners: [
+                BlocListener<FavoriteVehiclesBloc, FavoriteVehiclesState>(
+                  listener: (context, state) {
+                    if (state is FavoriteVehiclesError) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error favoritos: ${state.failure.message}')),
+                      );
+                    }
+                  },
+                ),
+                BlocListener<VehicleListBloc, VehicleListState>(
+                  listener: (context, state) {
+                    if (state is VehicleListError) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error vehículos: ${state.failure.message}')),
+                      );
+                    }
+                  },
+                ),
+              ],
+              child: BlocBuilder<VehicleListBloc, VehicleListState>(
+                builder: (context, vehicleState) {
+                  if (vehicleState is VehicleListLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (vehicleState is VehicleListLoaded) {
+                    final vehiculos = vehicleState.vehiculos;
+                    return BlocBuilder<FavoriteVehiclesBloc, FavoriteVehiclesState>(
+                      builder: (context, favState) {
+                        final favoriteIds = <String>{};
+                        if (favState is FavoriteVehiclesLoaded) {
+                          favoriteIds.addAll(favState.favoritos.map((v) => v.idVehiculo));
+                        }
+
+                        return ResponsiveVehicleGrid(
+                          vehiculos: vehiculos,
+                          itemBuilder: (vehiculo) => MarketplaceVehicleCard(
+                            vehiculo: vehiculo,
+                            isFavorite: favoriteIds.contains(vehiculo.idVehiculo),
+                            onToggleFavorite: () {
+                              context.read<FavoriteVehiclesBloc>().add(ToggleFavoriteEvent(vehiculo));
+                            },
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => VehicleDetailScreen(vehiculo: vehiculo),
+                                ),
+                              );
+                            },
+                          ),
                         );
                       },
-                    ),
-                  );
-                } else if (state is VehicleListError) {
-                  return Center(child: Text('Error: ${state.failure.message}'));
-                } else {
-                  return const SizedBox.shrink();
-                }
-              },
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+              ),
             ),
           ),
         ],
