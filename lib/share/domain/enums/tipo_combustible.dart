@@ -25,15 +25,15 @@ extension TipoCombustibleExtension on TipoCombustible {
   String get name {
     switch (this) {
       case TipoCombustible.gasolina:
-        return 'Gasolina';
+        return 'gasolina';
       case TipoCombustible.diesel:
-        return 'Diesel';
+        return 'diesel';
       case TipoCombustible.hibrido:
-        return 'Híbrido';
+        return 'hibrido';
       case TipoCombustible.hibrido_enchufable:
-        return 'Híbrido enchufable';
+        return 'hibrido_enchufable';
       case TipoCombustible.electrico:
-        return 'Eléctrico';
+        return 'electrico';
     }
   }
 

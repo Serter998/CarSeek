@@ -30,4 +30,9 @@ class NavigationService {
       MaterialPageRoute(builder: (context) => page),
     );
   }
+
+  static Future<void> navigateToAndRemoveUntil(
+      BuildContext context, String routeName) async {
+    await Navigator.of(context).pushNamedAndRemoveUntil(routeName, (route) => false);
+  }
 }
