@@ -17,13 +17,13 @@ extension TipoEtiquetaExtension on TipoEtiqueta {
   String get name {
     switch (this) {
       case TipoEtiqueta.eco:
-        return 'Eco';
+        return 'eco';
       case TipoEtiqueta.c:
-        return 'C';
+        return 'c';
       case TipoEtiqueta.b:
-        return 'B';
+        return 'b';
       case TipoEtiqueta.sin_etiqueta:
-        return 'Sin etiqueta';
+        return 'sin_etiqueta';
     }
   }
 

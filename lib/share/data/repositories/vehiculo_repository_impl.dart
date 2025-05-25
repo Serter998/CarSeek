@@ -254,4 +254,20 @@ class VehiculoRepositoryImpl implements VehiculoRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, List<Vehiculo>?>> getAllVehiculosByCurrentUser() async {
+    try {
+      final vehiculos = await vehiculoSource.getAllVehiculosByCurrentUser();
+      return Right(vehiculos);
+    } on TimeoutException {
+      return Left(TimeoutFailure());
+    } on SocketException {
+      return Left(NetworkFailure());
+    } catch (e) {
+      return Left(DatabaseFailure(
+        customMessage: 'Error al obtener lista de vehículos',
+        errorCode: 'vehicle_list_error',
+      ));
+    }
+  }
 }

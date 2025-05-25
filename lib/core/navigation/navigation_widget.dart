@@ -30,7 +30,7 @@ class NavigationWidget {
         ),
         BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            key: Key("dd"),
+            key: Key(AppRoutes.profile),
             label: "Perfil"
         ),
       ],
@@ -50,7 +50,7 @@ class NavigationWidget {
             NavigationService.navigateTo(context, AppRoutes.initial);
             break;
           case 4:
-            NavigationService.navigateTo(context, AppRoutes.initial);
+            NavigationService.navigateTo(context, AppRoutes.profile);
             break;
         }
       },

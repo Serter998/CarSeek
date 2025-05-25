@@ -1,11 +1,12 @@
 import 'package:car_seek/share/data/models/vehiculo_model.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class VehiculoSource {
   Future<VehiculoModel?> getVehiculoById(String id);
 
   Future<List<VehiculoModel>> getAllVehiculos();
+  
+  Future<List<VehiculoModel>?> getAllVehiculosByCurrentUser();
 
   Future<void> createVehiculo(VehiculoModel vehiculo);
 
@@ -66,5 +67,19 @@ class VehiculoSourceImpl implements VehiculoSource {
         .from('vehiculos')
         .update(vehiculo.toJson())
         .eq('id_vehiculo', vehiculo.idVehiculo!);
+  }
+
+  @override
+  Future<List<VehiculoModel>?> getAllVehiculosByCurrentUser() async {
+    String? idUsuario = supabaseClient.auth.currentUser!.id;
+    if(idUsuario.isEmpty) {
+      throw Exception("No se ha iniciado sesión.");
+    }
+    final List<dynamic> result = await supabaseClient
+        .from('vehiculos')
+        .select()
+        .eq('id_usuario', idUsuario);
+
+    return result.map((json) => VehiculoModel.fromJson(json)).toList();
   }
 }

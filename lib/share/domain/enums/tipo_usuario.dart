@@ -1,4 +1,16 @@
-enum TipoUsuario { cliente, administrador, mecanico }
+enum TipoUsuario { cliente, administrador, mecanico;
+
+  String get nombre {
+    switch (this) {
+      case TipoUsuario.cliente:
+        return 'Cliente';
+      case TipoUsuario.administrador:
+        return 'Administrador';
+      case TipoUsuario.mecanico:
+        return 'Mecánico';
+    }
+  }
+}
 
 extension TipoUsuarioExtension on TipoUsuario {
   String get name {

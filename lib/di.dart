@@ -1,11 +1,17 @@
 import 'package:car_seek/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:car_seek/features/auth/data/sources/auth_source.dart';
 import 'package:car_seek/features/auth/domain/repositories/auth_repository.dart';
+import 'package:car_seek/features/%20favorites/data/repositories/favorite_vehicle_repository_impl.dart';
+import 'package:car_seek/features/%20favorites/domain/repositories/favorite_vehicle_repository.dart';
+import 'package:car_seek/features/%20favorites/domain/use_cases/get_favorites_usecase.dart';
+import 'package:car_seek/features/%20favorites/domain/use_cases/is_favorite_usecase.dart';
+import 'package:car_seek/features/%20favorites/domain/use_cases/toggle_favorite_usecase.dart';
+import 'package:car_seek/features/%20favorites/presentation/blocs/favorite_vehicles_bloc.dart';
 import 'package:car_seek/features/home/presentation/blocs/vehicle_list_bloc.dart';
+import 'package:car_seek/features/profile/presentation/blocs/profile_bloc.dart';
 import 'package:car_seek/features/sell/presentation/blocs/sell_bloc.dart';
 import 'package:car_seek/share/data/repositories/vehiculo_repository_impl.dart';
 import 'package:car_seek/share/data/source/vehiculo_source.dart';
-import 'package:car_seek/share/domain/entities/vehiculo.dart';
 import 'package:car_seek/share/domain/repositories/vehiculo_repository.dart';
 import 'package:car_seek/share/domain/use_cases/usuario/cerrar_sesion_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/forgot_password_usecase.dart';
@@ -24,6 +30,7 @@ import 'package:car_seek/share/domain/use_cases/usuario/get_user_by_id_usecase.d
 import 'package:car_seek/share/domain/use_cases/usuario/update_user_usecase.dart';
 import 'package:car_seek/share/domain/use_cases/vehicles/create_vehiculo_usecase.dart';
 import 'package:car_seek/share/domain/use_cases/vehicles/delete_vehiculo_usecase.dart';
+import 'package:car_seek/share/domain/use_cases/vehicles/get_all_vehiculos_by_current_user.dart';
 import 'package:car_seek/share/domain/use_cases/vehicles/get_all_vehiculos_usecase.dart';
 import 'package:car_seek/share/domain/use_cases/vehicles/get_vehiculo_by_id_usecase.dart';
 import 'package:car_seek/share/domain/use_cases/vehicles/get_vehiculos_destacados_usecase.dart';
@@ -112,6 +119,8 @@ Future<void> init() async {
         () => VehiculoSourceImpl(dotenv.env['API_KEY'] ?? ''),
   );
 
+
+
   // Use cases
   di.registerLazySingleton(() => CreateVehiculoUseCase(repository: di()));
   di.registerLazySingleton(() => DeleteVehiculoUseCase(repository: di()));
@@ -121,6 +130,28 @@ Future<void> init() async {
   di.registerLazySingleton(() => SearchVehiculosUseCase(repository: di()));
   di.registerLazySingleton(() => UpdateVehiculoUseCase(repository: di()));
   di.registerLazySingleton(() => GetVehiculosFiltradosUseCase(repository: di()));
+  di.registerLazySingleton(() => GetAllVehiculosByCurrentUserUseCase(repository: di()));
+
+  /*-------------
+ * Inicio de Favoritos
+ * -------------*/
+// Repositorio
+  di.registerLazySingleton<FavoriteVehicleRepository>(
+        () => FavoriteVehicleRepositoryImpl(),
+  );
+
+// Casos de uso
+  di.registerLazySingleton(() => GetFavoritesUseCase(repository: di()));
+  di.registerLazySingleton(() => ToggleFavoriteUseCase(repository: di()));
+  di.registerLazySingleton(() => IsFavoriteUseCase(repository: di()));
+
+  // Bloc de favoritos (o el que corresponda)
+  di.registerFactory(() => FavoriteVehiclesBloc(
+    toggleFavoriteUseCase: di<ToggleFavoriteUseCase>(),
+    getFavoritesUseCase: di<GetFavoritesUseCase>(),
+    isFavoriteUseCase: di<IsFavoriteUseCase>(),
+  ));
+
 
   // Bloc
   di.registerFactory(() => VehicleListBloc(
@@ -128,11 +159,31 @@ Future<void> init() async {
     di<GetVehiculosFiltradosUseCase>(),
   ));
 
+
+
   /*-------------
    * Inicio de Sell
    * -------------*/
   // Bloc
   di.registerFactory(() => SellBloc(
     di<CreateVehiculoUseCase>(),
+  ));
+
+  /*-------------
+   * Inicio de User
+   * -------------*/
+  // Bloc
+  di.registerFactory(() => ProfileBloc(
+    di<CerrarSesionUseCase>(),
+    di<DeleteUserUsecase>(),
+    di<GetCurrentUserUseCase>(),
+    di<GetCurrentUsuarioUseCase>(),
+    di<GetUserByIdUsecase>(),
+    di<UpdateUserUsecase>(),
+    di<GetAllVehiculosByCurrentUserUseCase>(),
+    di<UpdateVehiculoUseCase>(),
+    di<DeleteVehiculoUseCase>(),
+    di<GetAllVehiculosUseCase>(),
+    di<GetAllUsersUsecase>(),
   ));
 }

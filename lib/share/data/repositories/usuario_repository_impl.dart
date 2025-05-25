@@ -143,7 +143,7 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
   @override
   Future<Either<Failure, void>> updateUser(Usuario usuario) async {
     try {
-      return Right(await userSource.updateUser(usuario as UsuarioModel));
+      return Right(await userSource.updateUser(UsuarioModel.fromEntity(usuario)));
     } on AuthException catch (e) {
       if (e.toString().contains('SocketException') ||
           e.toString().contains('Failed host lookup')) {
