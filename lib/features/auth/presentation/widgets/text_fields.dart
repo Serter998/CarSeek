@@ -138,7 +138,7 @@ class _InputTextState extends State<InputText>
         obscureText: !_isPasswordVisible,
         maxLength: widget.longitudMax,
         decoration: InputDecoration(
-          hintText: widget.placeholder,
+          labelText: widget.placeholder,  // <-- Cambiado de hintText a labelText
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),
@@ -146,9 +146,7 @@ class _InputTextState extends State<InputText>
           suffixIcon: widget.isPassword
               ? IconButton(
             icon: Icon(
-              _isPasswordVisible
-                  ? Icons.visibility_off
-                  : Icons.visibility,
+              _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
             ),
             onPressed: () {
               setState(() {

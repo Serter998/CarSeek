@@ -43,11 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (email.isNotEmpty && password.isNotEmpty) {
       context.read<AuthBloc>().add(
-        OnLoginEvent(
-          email: email,
-          password: password,
-          rememberMe: rememberMe,
-        ),
+        OnLoginEvent(email: email, password: password, rememberMe: rememberMe),
       );
     } else {
       CustomSnackBar.showWarning(
@@ -59,65 +55,114 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 30),
-            Center(
-              child: Image.asset(
-                'assets/images/CarSeekSinFondo.png',
-                height: 200,
-                fit: BoxFit.contain,
-              ),
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/CarSeekSinFondo.png',
+                  height: 160,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(height: 32),
+                Card(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  elevation: 3,
+                  margin: EdgeInsets.zero,
+                  child: Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          "Iniciar sesión",
+                          style: textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        InputText(
+                          placeholder: "Correo electrónico*",
+                          icon: const Icon(Icons.mail_outline),
+                          controller: emailController,
+                          toolTip: null,
+                          isPassword: false,
+                          longitudMax: 100,
+                        ),
+                        const SizedBox(height: 16),
+                        InputText(
+                          placeholder: "Contraseña*",
+                          icon: const Icon(Icons.lock_outline),
+                          controller: passwordController,
+                          toolTip: null,
+                          isPassword: true,
+                          longitudMax: 80,
+                        ),
+                        const SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            RememberMeCheckbox(
+                              value: rememberMe,
+                              onChanged: (value) {
+                                setState(() {
+                                  rememberMe = value!;
+                                });
+                              },
+                            ),
+                            Expanded(
+                              child: TextButton(
+                                onPressed: () {
+                                  context.read<AuthBloc>().add(
+                                    OnNavigateToForgotPasswordEvent(),
+                                  );
+                                },
+                                child: const Text(
+                                  "¿Olvidaste tu contraseña?",
+                                  maxLines: 2,
+                                  softWrap: true,
+                                  overflow: TextOverflow.visible,
+                                  // o TextOverflow.clip
+                                  textAlign:
+                                      TextAlign
+                                          .right, // para que el texto quede alineado a la derecha
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        ActionButton(
+                          function: () => _handleLogin(context),
+                          text: "Iniciar sesión",
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Column(
+                  children: [
+                    Text("¿Aún no tienes cuenta?", style: textTheme.bodyMedium),
+                    RedirectTextButton(
+                      function: () {
+                        context.read<AuthBloc>().add(OnNavigateToRegisterEvent());
+                      },
+                      text: "Regístrate aquí",
+                    ),
+                  ],
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            InputText(
-              placeholder: "Introduzca su correo*",
-              icon: const Icon(Icons.mail),
-              controller: emailController,
-              toolTip: null,
-              isPassword: false,
-              longitudMax: 100,
-            ),
-            InputText(
-              placeholder: "Introduzca su contraseña*",
-              icon: const Icon(Icons.lock),
-              controller: passwordController,
-              toolTip: null,
-              isPassword: true,
-              longitudMax: 80,
-            ),
-            const SizedBox(height: 1),
-            RememberMeCheckbox(
-              value: rememberMe,
-              onChanged: (value) {
-                setState(() {
-                  rememberMe = value!;
-                });
-              },
-            ),
-            RedirectTextButton(
-              function: () {
-                context.read<AuthBloc>().add(OnNavigateToForgotPasswordEvent());
-              },
-              text: "¿Has olvidado tu contraseña?",
-            ),
-            const SizedBox(height: 10),
-            ActionButton(
-              function: () => _handleLogin(context),
-              text: "Iniciar sesión",
-            ),
-            DividersStyles.dividerGray,
-            RedirectTextButton(
-              function: () {
-                context.read<AuthBloc>().add(OnNavigateToRegisterEvent());
-              },
-              text: "¿Aún no estás registrado?",
-            ),
-          ],
+          ),
         ),
       ),
     );

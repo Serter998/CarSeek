@@ -74,7 +74,6 @@ class _HomeScreenState extends State<HomeScreen> {
            (Icons.car_rental),
         ),
         title: const Text('CarSeek'),
-        backgroundColor: AppColors.primary,
       ),
       body: Column(
         children: [
