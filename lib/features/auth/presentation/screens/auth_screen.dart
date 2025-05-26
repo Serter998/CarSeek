@@ -1,5 +1,3 @@
-import 'package:car_seek/core/errors/auth_failure.dart';
-import 'package:car_seek/core/errors/failure.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/screens/auth_error_screen.dart';
 import 'package:car_seek/features/auth/presentation/screens/auth_success_screen.dart';

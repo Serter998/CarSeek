@@ -1,4 +1,5 @@
 import 'package:car_seek/core/navigation/navigation_widget.dart';
+import 'package:car_seek/core/themes/theme_controller.dart';
 import 'package:car_seek/features/profile/presentation/blocs/profile_bloc.dart';
 import 'package:car_seek/features/profile/presentation/screens/administracion/profile_administracion_screen.dart';
 import 'package:car_seek/features/profile/presentation/screens/administracion/profile_administracion_usuarios_screen.dart';
@@ -35,17 +36,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         leading: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
-            // Si el estado es PublishInitial, no mostrar el botón de atrás
             if (state is ProfileInitial || state is ProfileUpdateSuccess) {
-              return Icon(Icons.person);
-            } else if(state is ProfileUpdateVehicle) {
+              return const Icon(Icons.person);
+            } else if (state is ProfileUpdateVehicle) {
               return IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
                   context.read<ProfileBloc>().add(OnNavigateToUpdateVehicles());
                 },
               );
-            } else if(state is ProfileAdministracionVerificaciones || state is ProfileAdministracionUsuarios) {
+            } else if (state is ProfileAdministracionVerificaciones ||
+                state is ProfileAdministracionUsuarios) {
               return IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
@@ -93,6 +94,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
             }
           },
         ),
+        actions: [
+          PopupMenuButton<String>(
+            icon: Icon(
+              ThemeController.isDarkMode ? Icons.dark_mode : Icons.light_mode,
+            ),
+            onSelected: (value) {
+              if (value == 'light') {
+                ThemeController.toggleTheme(false);
+              } else if (value == 'dark') {
+                ThemeController.toggleTheme(true);
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'light',
+                child: Text('Modo Claro'),
+              ),
+              const PopupMenuItem(
+                value: 'dark',
+                child: Text('Modo Oscuro'),
+              ),
+            ],
+          ),
+        ],
       ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
@@ -100,7 +125,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             case ProfileLoading():
               return const Center(child: CircularProgressIndicator());
             case ProfileInitial():
-              return ProfileInitialScreen(usuario: state.usuario,);
+              return ProfileInitialScreen(usuario: state.usuario);
             case ProfileUpdate():
               return ProfileUpdateUsuarioScreen(
                 user: state.user,
@@ -111,7 +136,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             case ProfileUpdateVehicle():
               return ProfileVehicleDetailScreen(vehiculo: state.vehiculo);
             case ProfileUpdateSuccess():
-              return ProfileInitialScreen(usuario: state.usuario,);
+              return ProfileInitialScreen(usuario: state.usuario);
             case ProfileDeleteSuccess():
               return ProfileCerrarSesionSuccessScreen(
                 mensaje: "¡Cuenta borrada con éxito!",
@@ -127,9 +152,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             case ProfileAdministracion():
               return ProfileAdministracionScreen(usuario: state.usuario);
             case ProfileAdministracionVerificaciones():
-              return ProfileAdministracionVerificacionesScreen(vehiculos: state.vehiculos);
+              return ProfileAdministracionVerificacionesScreen(
+                  vehiculos: state.vehiculos);
             case ProfileAdministracionUsuarios():
-              return ProfileAdministracionUsuariosScreen(usuarios: state.usuarios);
+              return ProfileAdministracionUsuariosScreen(
+                  usuarios: state.usuarios);
           }
         },
       ),

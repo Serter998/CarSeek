@@ -68,10 +68,9 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
                         alignment: Alignment.centerLeft,
                         child: TextButton.icon(
                           onPressed: () => Navigator.of(context).pop(),
-                          icon: const Icon(Icons.arrow_back, color: Colors.white),
+                          icon: const Icon(Icons.arrow_back),
                           label: const Text(
                             'Volver',
-                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
@@ -126,13 +125,12 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 20),
                     Text(
                       '${vehiculo.anio} • ${vehiculo.kilometros} km',
-                      style: const TextStyle(fontSize: 16, color: Colors.white),
+                      style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(height: 10),
                     Text(
