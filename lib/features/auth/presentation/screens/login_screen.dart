@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 });
                               },
                             ),
-                            Expanded(
+                            Flexible(
                               child: TextButton(
                                 onPressed: () {
                                   context.read<AuthBloc>().add(
@@ -128,17 +128,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: const Text(
                                   "¿Olvidaste tu contraseña?",
                                   maxLines: 2,
-                                  softWrap: true,
-                                  overflow: TextOverflow.visible,
-                                  // o TextOverflow.clip
-                                  textAlign:
-                                      TextAlign
-                                          .right, // para que el texto quede alineado a la derecha
+                                  overflow: TextOverflow.ellipsis, // mejor para evitar overflow
+                                  textAlign: TextAlign.right,
                                 ),
                               ),
                             ),
                           ],
                         ),
+
                         const SizedBox(height: 20),
                         ActionButton(
                           function: () => _handleLogin(context),
