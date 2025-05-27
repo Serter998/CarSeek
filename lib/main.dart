@@ -1,9 +1,10 @@
 import 'package:car_seek/core/themes/app_theme.dart';
 import 'package:car_seek/core/themes/app_theme_light.dart';
 import 'package:car_seek/di.dart';
-import 'package:car_seek/features/%20favorites/presentation/blocs/favorite_vehicles_bloc.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/screens/auth_screen.dart';
+import 'package:car_seek/features/favorites/presentation/blocs/favorite_vehicles_bloc.dart';
+import 'package:car_seek/features/favorites/presentation/screens/favorite_vehicles_screen.dart';
 import 'package:car_seek/features/home/presentation/blocs/vehicle_list_bloc.dart';
 import 'package:car_seek/features/home/presentation/screens/home_screen.dart';
 import 'package:car_seek/features/profile/presentation/blocs/profile_bloc.dart';
@@ -17,7 +18,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 
 import 'core/constants/app_routes.dart';
-import 'core/themes/theme_controller.dart'; // <-- Asegúrate de importar esto
+import 'core/themes/theme_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +31,6 @@ void main() async {
 
   runApp(const MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
         builder: (context, themeMode, _) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: AppThemeLight(selectedColor: 3).theme(),
+            theme: AppThemeLight(selectedColor: 0).theme(),
             darkTheme: AppTheme(selectedColor: 0).theme(),
             themeMode: themeMode,
             title: "CarSeek",
@@ -58,6 +58,7 @@ class MyApp extends StatelessWidget {
               AppRoutes.initial: (context) => const AuthScreen(),
               AppRoutes.home: (context) => const HomeScreen(),
               AppRoutes.sell: (context) => const SellScreen(),
+              AppRoutes.favorites: (context) => const FavoritesScreen(),
               AppRoutes.profile: (context) => const ProfileScreen(),
             },
             initialRoute: AppRoutes.initial,

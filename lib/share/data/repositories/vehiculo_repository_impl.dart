@@ -270,4 +270,30 @@ class VehiculoRepositoryImpl implements VehiculoRepository {
       ));
     }
   }
+  @override
+  Future<Either<Failure, List<Vehiculo>>> getVehiculosByIds(List<String> ids) async {
+    try {
+      final allVehiculos = await vehiculoSource.getAllVehiculos();
+      final vehiculosFiltrados = allVehiculos.where((v) => ids.contains(v.idVehiculo)).toList();
+
+      if (vehiculosFiltrados.isEmpty) {
+        return Left(DatabaseFailure(
+          customMessage: 'No se encontraron vehículos con los IDs proporcionados',
+          errorCode: 'vehicles_not_found',
+          statusCode: 404,
+        ));
+      }
+
+      return Right(vehiculosFiltrados);
+    } on TimeoutException {
+      return Left(TimeoutFailure());
+    } on SocketException {
+      return Left(NetworkFailure());
+    } catch (e) {
+      return Left(DatabaseFailure(
+        customMessage: 'Error al obtener vehículos por IDs: ${e.toString()}',
+        errorCode: 'vehicle_by_ids_error',
+      ));
+    }
+  }
 }

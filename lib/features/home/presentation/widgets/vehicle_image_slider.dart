@@ -1,36 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-class VehicleImageSlider extends StatefulWidget {
+class VehicleImageSlider extends StatelessWidget {
   final List<String> imagenes;
   final int currentPage;
   final ValueChanged<int> onPageChanged;
+  final PageController pageController;  // <- nuevo parámetro
 
   const VehicleImageSlider({
     super.key,
     required this.imagenes,
     required this.currentPage,
     required this.onPageChanged,
+    required this.pageController,   // <- lo recibes aquí
   });
-
-  @override
-  State<VehicleImageSlider> createState() => _VehicleImageSliderState();
-}
-
-class _VehicleImageSliderState extends State<VehicleImageSlider> {
-  late final PageController _pageController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(initialPage: widget.currentPage);
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,19 +26,17 @@ class _VehicleImageSliderState extends State<VehicleImageSlider> {
           child: AspectRatio(
             aspectRatio: 4 / 3,
             child: PageView.builder(
-              controller: _pageController,
-              itemCount: widget.imagenes.length,
-              onPageChanged: widget.onPageChanged,
+              controller: pageController, // <- usa el controlador externo
+              itemCount: imagenes.length,
+              onPageChanged: onPageChanged,
               itemBuilder: (context, index) {
                 return CachedNetworkImage(
-                  imageUrl: widget.imagenes[index],
+                  imageUrl: imagenes[index],
                   fit: BoxFit.cover,
                   width: double.infinity,
                   placeholder: (context, url) => Container(
                     color: Colors.grey[200],
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
+                    child: const Center(child: CircularProgressIndicator()),
                   ),
                   errorWidget: (context, url, error) => Container(
                     color: Colors.grey[300],
@@ -68,13 +49,13 @@ class _VehicleImageSliderState extends State<VehicleImageSlider> {
             ),
           ),
         ),
-        if (widget.imagenes.length > 1 || isWide) ...[
+        if (imagenes.length > 1 || isWide) ...[
           _navigationButton(
             icon: Icons.chevron_left,
             onPressed: () {
-              if (widget.currentPage > 0) {
-                widget.onPageChanged(widget.currentPage - 1);
-                _pageController.previousPage(
+              if (currentPage > 0) {
+                onPageChanged(currentPage - 1);
+                pageController.previousPage(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
@@ -85,9 +66,9 @@ class _VehicleImageSliderState extends State<VehicleImageSlider> {
           _navigationButton(
             icon: Icons.chevron_right,
             onPressed: () {
-              if (widget.currentPage < widget.imagenes.length - 1) {
-                widget.onPageChanged(widget.currentPage + 1);
-                _pageController.nextPage(
+              if (currentPage < imagenes.length - 1) {
+                onPageChanged(currentPage + 1);
+                pageController.nextPage(
                   duration: const Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
                 );
@@ -102,14 +83,14 @@ class _VehicleImageSliderState extends State<VehicleImageSlider> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
-                widget.imagenes.length,
+                imagenes.length,
                     (index) => Container(
                   width: 8,
                   height: 8,
                   margin: const EdgeInsets.symmetric(horizontal: 4),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: widget.currentPage == index
+                    color: currentPage == index
                         ? Colors.white
                         : Colors.white.withOpacity(0.5),
                   ),
