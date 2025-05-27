@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:car_seek/core/constants/app_colors.dart';
 import 'package:car_seek/core/navigation/navigation_widget.dart';
-import 'package:car_seek/features/%20favorites/presentation/blocs/favorite_vehicles_bloc.dart';
+import 'package:car_seek/features/favorites/presentation/blocs/favorite_vehicles_bloc.dart';
 import 'package:car_seek/features/home/presentation/blocs/vehicle_list_bloc.dart';
 import 'package:car_seek/features/home/presentation/screens/vehicle_detail_screen.dart';
 import 'package:car_seek/features/home/presentation/widgets/filtro_activo_widget.dart';
@@ -9,8 +12,7 @@ import 'package:car_seek/features/home/presentation/widgets/filtro_dropdown.dart
 import 'package:car_seek/features/home/presentation/widgets/responsive_vehicle_grid.dart';
 import 'package:car_seek/features/home/presentation/widgets/vehicle_card.dart';
 import 'package:car_seek/share/domain/enums/filtro_vehiculo.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -42,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onSearch(String value) {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 300), () {
-      if(!mounted) return;
+      if (!mounted) return;
       context.read<VehicleListBloc>().add(FilterVehiculosEvent(
         query: value,
         filtro: _filtroSeleccionado,
@@ -68,12 +70,58 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, authState) {
+        if (authState is AuthLoginSuccess) {
+          final userId = authState.user.id;
+          final favoriteBloc = GetIt.I<FavoriteVehiclesBloc>(param1: userId);
+
+          return BlocProvider.value(
+            value: favoriteBloc..add(LoadFavoritosConVehiculosEvent(userId: userId)),
+            child: _HomeContent(
+              searchController: _searchController,
+              filtroSeleccionado: _filtroSeleccionado,
+              onFiltroSeleccionado: _onFiltroSeleccionado,
+              onQuitarFiltro: _quitarFiltro,
+              onSearch: _onSearch,
+            ),
+          );
+        }
+
+        return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      },
+    );
+  }
+}
+
+class _HomeContent extends StatelessWidget {
+  final TextEditingController searchController;
+  final FiltroVehiculo? filtroSeleccionado;
+  final void Function(FiltroVehiculo) onFiltroSeleccionado;
+  final VoidCallback onQuitarFiltro;
+  final void Function(String) onSearch;
+
+  const _HomeContent({
+    required this.searchController,
+    required this.filtroSeleccionado,
+    required this.onFiltroSeleccionado,
+    required this.onQuitarFiltro,
+    required this.onSearch,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(
-           (Icons.car_rental),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/images/logosinnombre.png',
+            fit: BoxFit.contain,
+          ),
         ),
         title: const Text('CarSeek'),
+        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -83,8 +131,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 Expanded(
                   child: TextField(
-                    controller: _searchController,
-                    onChanged: _onSearch,
+                    controller: searchController,
+                    onChanged: onSearch,
                     decoration: InputDecoration(
                       hintText: 'Buscar vehículos...',
                       prefixIcon: const Icon(Icons.search),
@@ -96,27 +144,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(width: 8),
                 FiltroDropdown(
-                  selectedFiltro: _filtroSeleccionado,
-                  onFiltroSeleccionado: _onFiltroSeleccionado,
+                  selectedFiltro: filtroSeleccionado,
+                  onFiltroSeleccionado: onFiltroSeleccionado,
                 ),
               ],
             ),
           ),
-
-          if (_filtroSeleccionado != null)
+          if (filtroSeleccionado != null)
             FiltroActivoWidget(
-              filtro: _filtroSeleccionado!,
-              onClear: _quitarFiltro,
+              filtro: filtroSeleccionado!,
+              onClear: onQuitarFiltro,
             ),
-
           Expanded(
             child: MultiBlocListener(
               listeners: [
                 BlocListener<FavoriteVehiclesBloc, FavoriteVehiclesState>(
                   listener: (context, state) {
-                    if (state is FavoriteVehiclesError) {
+                    if (state is FavoriteError) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Error favoritos: ${state.failure.message}')),
+                      );
+                    } else if (state is FavoriteVehiclesLoaded && state.message != null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(state.message!), backgroundColor: AppColors.primary,),
                       );
                     }
                   },
@@ -150,13 +200,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             vehiculo: vehiculo,
                             isFavorite: favoriteIds.contains(vehiculo.idVehiculo),
                             onToggleFavorite: () {
-                              context.read<FavoriteVehiclesBloc>().add(ToggleFavoriteEvent(vehiculo));
+                              context.read<FavoriteVehiclesBloc>().add(ToggleVehiculoFavoritoEvent(vehiculo: vehiculo));
                             },
                             onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => VehicleDetailScreen(vehiculo: vehiculo),
+                                  builder: (_) => BlocProvider.value(
+                                    value: BlocProvider.of<FavoriteVehiclesBloc>(context),
+                                    child: VehicleDetailScreen(vehiculo: vehiculo),
+                                  ),
                                 ),
                               );
                             },

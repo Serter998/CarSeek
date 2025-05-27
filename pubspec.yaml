@@ -2,7 +2,6 @@ name: car_seek
 description: "TFG hecho por Raúl Sánchez y Sergio Rasillo."
 publish_to: 'none'
 version: 0.1.0
-
 environment:
   sdk: ^3.7.2
 
@@ -27,7 +26,7 @@ dependencies:
   crypto: ^3.0.6 #Cifrar datos
   flutter_dotenv: ^5.0.2
   lucide_icons: ^0.257.0
-
+  collection: ^1.19.1
 
   # 📍 Mapas y Ubicación
   google_maps_flutter: ^2.5.0  # Google Maps para mostrar vehículos
@@ -62,3 +61,4 @@ flutter:
     - .env
     - assets/images/CarSeekSinFondo.png
     - assets/images/VentaVehiculo.png
+    - assets/images/logosinnombre.png
