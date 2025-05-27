@@ -8,6 +8,8 @@ abstract class VehiculoSource {
   
   Future<List<VehiculoModel>?> getAllVehiculosByCurrentUser();
 
+  Future<List<VehiculoModel>> getVehiculosByIds(List<String> ids);
+
   Future<void> createVehiculo(VehiculoModel vehiculo);
 
   Future<void> updateVehiculo(VehiculoModel vehiculo);
@@ -43,7 +45,7 @@ class VehiculoSourceImpl implements VehiculoSource {
     } catch (e, stackTrace) {
       print('❌ Error al obtener vehículos: $e');
       print('📍 StackTrace: $stackTrace');
-      rethrow; // Esto relanza el error para que puedas manejarlo arriba si quieres
+      rethrow;
     }
   }
 
@@ -59,6 +61,22 @@ class VehiculoSourceImpl implements VehiculoSource {
       return VehiculoModel.fromJson(response);
     }
     return null;
+  }
+
+  @override
+  Future<List<VehiculoModel>> getVehiculosByIds(List<String> ids) async {
+    if (ids.isEmpty) return [];
+    try {
+      final List<dynamic> response = await supabaseClient
+          .from('vehiculos')
+          .select()
+          .filter('id_vehiculo', 'in', '(${ids.map((e) => "'$e'").join(",")})');
+
+      return response.map((json) => VehiculoModel.fromJson(json)).toList();
+    } catch (e) {
+      print('❌ Error al obtener vehículos por IDs: $e');
+      rethrow;
+    }
   }
 
   @override

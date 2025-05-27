@@ -13,4 +13,5 @@ abstract class VehiculoRepository {
   Future<Either<Failure, List<Vehiculo>>> searchVehiculos(String query);
   Future<Either<Failure, List<Vehiculo>>> getVehiculosFiltrados(String query, FiltroVehiculo? filtro);
   Future<Either<Failure, List<Vehiculo>?>> getAllVehiculosByCurrentUser();
+  Future<Either<Failure, List<Vehiculo>>> getVehiculosByIds(List<String> ids);
 }

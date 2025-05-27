@@ -66,18 +66,6 @@ class _MarketplaceVehicleCardState extends State<MarketplaceVehicleCard> {
   void _handleToggleFavorite() {
     widget.onToggleFavorite();
     final isNowFavorite = !widget.isFavorite;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          isNowFavorite
-              ? '¡Vehículo añadido a favoritos!'
-              : '¡Vehículo eliminado de favoritos!',
-          style: const TextStyle(fontSize: 16),
-        ),
-        backgroundColor: AppColors.primary,
-        duration: const Duration(seconds: 2),
-      ),
-    );
   }
 
   @override

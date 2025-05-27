@@ -13,3 +13,8 @@ class FilterVehiculosEvent extends VehicleListEvent {
     this.filtro,
   });
 }
+
+class LoadVehiculosByIdsEvent extends VehicleListEvent {
+  final List<String> ids;
+  LoadVehiculosByIdsEvent(this.ids);
+}
