@@ -58,7 +58,7 @@ class FavoritesVehicleList extends StatelessWidget {
                 left: 8,
                 right: 8,
                 top: 20,
-                bottom: 80,
+                bottom: 100,
               ),
               child: Container(
                 margin: const EdgeInsets.symmetric(vertical: 8),

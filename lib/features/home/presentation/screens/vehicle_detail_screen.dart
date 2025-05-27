@@ -45,6 +45,7 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
           appBar: isWide
               ? null
               : AppBar(
+            backgroundColor: AppColors.primary,
             title: Text(
               widget.vehiculo.titulo,
               style: const TextStyle(fontSize: 18),
@@ -56,7 +57,7 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
               ),
             ],
           ),
-          body: SafeArea(
+          body: SafeArea(  // Aquí envuelvo todo en SafeArea para respetar zonas seguras
             child: SingleChildScrollView(
               padding: EdgeInsets.all(isWide ? 32 : 16),
               child: Center(
