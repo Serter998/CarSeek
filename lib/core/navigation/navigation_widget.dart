@@ -15,7 +15,7 @@ class NavigationWidget {
         ),
         BottomNavigationBarItem(
             icon: Icon(Icons.favorite),
-            key: Key(AppRoutes.initial),
+            key: Key(AppRoutes.favorites),
             label: "Favoritos"
         ),
         BottomNavigationBarItem(
@@ -41,7 +41,7 @@ class NavigationWidget {
             NavigationService.navigateTo(context, AppRoutes.home);
             break;
           case 1:
-            NavigationService.navigateTo(context, AppRoutes.initial);
+            NavigationService.navigateTo(context, AppRoutes.favorites);
             break;
           case 2:
             NavigationService.navigateTo(context, AppRoutes.sell);
