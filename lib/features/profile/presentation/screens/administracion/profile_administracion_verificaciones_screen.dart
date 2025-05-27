@@ -63,6 +63,18 @@ class _ProfileAdministracionVerificacionesScreenState
     Navigator.pop(context);
   }
 
+  void _eliminarVehiculo(Vehiculo vehiculo) {
+    context.read<ProfileBloc>().add(
+      OnDeleteVehiculoEvent(vehiculo: vehiculo),
+    );
+
+    CustomSnackBar.show(
+      context: context,
+      message: "Vehículo eliminado con éxito.",
+      backgroundColor: Colors.white10,
+    );
+    Navigator.pop(context);
+  }
 
   Vehiculo _crearVehiculoActualizado(Vehiculo original, bool verificado) {
     return Vehiculo(
@@ -99,6 +111,7 @@ class _ProfileAdministracionVerificacionesScreenState
           vehiculo: vehiculo,
           onAprobar: _aprobarVehiculo,
           onRechazar: _rechazarVehiculo,
+          onEliminar: _eliminarVehiculo,
         );
       },
     );
@@ -128,7 +141,7 @@ class _ProfileAdministracionVerificacionesScreenState
             const SizedBox(height: 12),
             Expanded(
               child: vehiculosFiltrados.isEmpty
-                  ? Center(child: Text('No hay vehículos que coincidan.'))
+                  ? const Center(child: Text('No hay vehículos que coincidan.'))
                   : ListView.builder(
                 itemCount: vehiculosFiltrados.length,
                 itemBuilder: (context, index) {

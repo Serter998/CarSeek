@@ -35,7 +35,7 @@ class _ProfileAdministracionUsuariosScreenState
 
       final coincideTipo =
           _filtroSeleccionado == TipoUsuarioFiltro.todos ||
-          usuario.tipoUsuario == mapFiltroATipoUsuario(_filtroSeleccionado);
+              usuario.tipoUsuario == mapFiltroATipoUsuario(_filtroSeleccionado);
 
       return coincideBusqueda && coincideTipo;
     }).toList();
@@ -57,31 +57,16 @@ class _ProfileAdministracionUsuariosScreenState
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder:
-          (_) => UsuarioDetalleSheet(
-            usuario: usuario,
-            onCambiarTipo: (nuevoTipo) {
-              setState(() {
-                final index = widget.usuarios!.indexWhere(
+      builder: (_) => UsuarioDetalleSheet(
+        usuario: usuario,
+        onCambiarTipo: (nuevoTipo) {
+          setState(() {
+            final index = widget.usuarios!.indexWhere(
                   (u) => u.id == usuario.id,
-                );
-                if (index != -1) {
-                  widget.usuarios![index] = UsuarioModel.fromEntity(
-                    Usuario(
-                      id: usuario.id,
-                      userId: usuario.userId,
-                      nombre: usuario.nombre,
-                      telefono: usuario.telefono,
-                      ubicacion: usuario.ubicacion,
-                      reputacion: usuario.reputacion,
-                      fechaRegistro: usuario.fechaRegistro,
-                      fechaActualizacion: DateTime.now(),
-                      tipoUsuario: nuevoTipo,
-                    ),
-                  );
-                }
-
-                Usuario usuarioActualizado = Usuario(
+            );
+            if (index != -1) {
+              widget.usuarios![index] = UsuarioModel.fromEntity(
+                Usuario(
                   id: usuario.id,
                   userId: usuario.userId,
                   nombre: usuario.nombre,
@@ -91,21 +76,49 @@ class _ProfileAdministracionUsuariosScreenState
                   fechaRegistro: usuario.fechaRegistro,
                   fechaActualizacion: DateTime.now(),
                   tipoUsuario: nuevoTipo,
-                );
+                ),
+              );
+            }
 
-                context.read<ProfileBloc>().add(
-                  OnEditUsuarioEvent(usuario: usuarioActualizado),
-                );
+            Usuario usuarioActualizado = Usuario(
+              id: usuario.id,
+              userId: usuario.userId,
+              nombre: usuario.nombre,
+              telefono: usuario.telefono,
+              ubicacion: usuario.ubicacion,
+              reputacion: usuario.reputacion,
+              fechaRegistro: usuario.fechaRegistro,
+              fechaActualizacion: DateTime.now(),
+              tipoUsuario: nuevoTipo,
+            );
 
-                CustomSnackBar.show(
-                  context: context,
-                  message: "Tipo de usuario actualizado a ${nuevoTipo.nombre}.",
-                  backgroundColor: Colors.white10,
-                );
-              });
-              Navigator.pop(context);
-            },
-          ),
+            context.read<ProfileBloc>().add(
+              OnEditUsuarioEvent(usuario: usuarioActualizado),
+            );
+
+            CustomSnackBar.show(
+              context: context,
+              message: "Tipo de usuario actualizado a ${nuevoTipo.nombre}.",
+              backgroundColor: Colors.white10,
+            );
+          });
+
+          Navigator.pop(context);
+        },
+        onBorrarUsuario: (usuarioBorrar) {
+          context.read<ProfileBloc>().add(
+            OnDeleteUsuarioEvent(usuario: usuarioBorrar),
+          );
+
+          Navigator.pop(context);
+
+          CustomSnackBar.show(
+            context: context,
+            message: "Usuario borrado con éxito.",
+            backgroundColor: Colors.white10,
+          );
+        },
+      ),
     );
   }
 
@@ -116,19 +129,18 @@ class _ProfileAdministracionUsuariosScreenState
         children: [
           _buildBusquedaYFiltro(context),
           Expanded(
-            child:
-                _usuariosFiltrados.isEmpty
-                    ? const Center(child: Text('No se encontraron usuarios.'))
-                    : ListView.builder(
-                      itemCount: _usuariosFiltrados.length,
-                      itemBuilder: (_, index) {
-                        final usuario = _usuariosFiltrados[index];
-                        return UsuarioCard(
-                          usuario: usuario,
-                          onTap: () => _mostrarDetalle(usuario),
-                        );
-                      },
-                    ),
+            child: _usuariosFiltrados.isEmpty
+                ? const Center(child: Text('No se encontraron usuarios.'))
+                : ListView.builder(
+              itemCount: _usuariosFiltrados.length,
+              itemBuilder: (_, index) {
+                final usuario = _usuariosFiltrados[index];
+                return UsuarioCard(
+                  usuario: usuario,
+                  onTap: () => _mostrarDetalle(usuario),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -157,7 +169,6 @@ class _ProfileAdministracionUsuariosScreenState
             ),
           ),
           const SizedBox(width: 12),
-
           PopupMenuButton<TipoUsuarioFiltro>(
             initialValue: _filtroSeleccionado,
             onSelected: (filtro) {
@@ -165,69 +176,34 @@ class _ProfileAdministracionUsuariosScreenState
                 _filtroSeleccionado = filtro;
               });
             },
-            itemBuilder:
-                (_) => [
-                  PopupMenuItem(
-                    value: TipoUsuarioFiltro.todos,
-                    child: Row(
-                      children: [
-                        if (_filtroSeleccionado == TipoUsuarioFiltro.todos)
-                          Icon(Icons.check, size: 18),
-                        if (_filtroSeleccionado != TipoUsuarioFiltro.todos)
-                          SizedBox(width: 18),
-                        SizedBox(width: 8),
-                        Text(TipoUsuarioFiltro.todos.nombre),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: TipoUsuarioFiltro.cliente,
-                    child: Row(
-                      children: [
-                        if (_filtroSeleccionado == TipoUsuarioFiltro.cliente)
-                          Icon(Icons.check, size: 18),
-                        if (_filtroSeleccionado != TipoUsuarioFiltro.cliente)
-                          SizedBox(width: 18),
-                        SizedBox(width: 8),
-                        Text(TipoUsuarioFiltro.cliente.nombre),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: TipoUsuarioFiltro.administrador,
-                    child: Row(
-                      children: [
-                        if (_filtroSeleccionado ==
-                            TipoUsuarioFiltro.administrador)
-                          Icon(Icons.check, size: 18),
-                        if (_filtroSeleccionado !=
-                            TipoUsuarioFiltro.administrador)
-                          SizedBox(width: 18),
-                        SizedBox(width: 8),
-                        Text(TipoUsuarioFiltro.administrador.nombre),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: TipoUsuarioFiltro.mecanico,
-                    child: Row(
-                      children: [
-                        if (_filtroSeleccionado == TipoUsuarioFiltro.mecanico)
-                          Icon(Icons.check, size: 18),
-                        if (_filtroSeleccionado != TipoUsuarioFiltro.mecanico)
-                          SizedBox(width: 18),
-                        SizedBox(width: 8),
-                        Text(TipoUsuarioFiltro.mecanico.nombre),
-                      ],
-                    ),
-                  ),
-                ],
-            icon: Icon(Icons.filter_list_rounded),
+            itemBuilder: (_) => [
+              _buildFiltroItem(TipoUsuarioFiltro.todos),
+              _buildFiltroItem(TipoUsuarioFiltro.cliente),
+              _buildFiltroItem(TipoUsuarioFiltro.administrador),
+              _buildFiltroItem(TipoUsuarioFiltro.mecanico),
+            ],
+            icon: const Icon(Icons.filter_list_rounded),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
             tooltip: 'Filtrar tipo',
           ),
+        ],
+      ),
+    );
+  }
+
+  PopupMenuItem<TipoUsuarioFiltro> _buildFiltroItem(TipoUsuarioFiltro filtro) {
+    return PopupMenuItem(
+      value: filtro,
+      child: Row(
+        children: [
+          if (_filtroSeleccionado == filtro)
+            const Icon(Icons.check, size: 18)
+          else
+            const SizedBox(width: 18),
+          const SizedBox(width: 8),
+          Text(filtro.nombre),
         ],
       ),
     );

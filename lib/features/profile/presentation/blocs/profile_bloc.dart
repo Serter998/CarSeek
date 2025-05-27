@@ -16,6 +16,8 @@ import 'package:car_seek/share/domain/use_cases/vehicles/update_vehiculo_usecase
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import '../../../../share/domain/use_cases/usuario/delete_other_user_usecase.dart';
+
 part 'profile_event.dart';
 
 part 'profile_state.dart';
@@ -23,6 +25,7 @@ part 'profile_state.dart';
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final CerrarSesionUseCase _cerrarSesionUseCase;
   final DeleteUserUsecase _deleteUserUseCase;
+  final DeleteOtherUserUsecase _deleteOtherUserUsecase;
   final GetCurrentUserUseCase _getCurrentUserUseCase;
   final GetCurrentUsuarioUseCase _getCurrentUsuarioUseCase;
   final GetUserByIdUsecase _getUserByIdUseCase;
@@ -46,6 +49,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     this._deleteVehiculoUseCase,
     this._getAllVehiculosUseCase,
     this._getAllUsersUsecase,
+    this._deleteOtherUserUsecase,
   ) : super(ProfileLoading()) {
     Future.microtask(() => add(OnLoadInitialProfileEvent()));
 
@@ -95,7 +99,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       }
     });
 
-    on<OnDeleteUsuarioEvent>((event, emit) async {
+    on<OnDeleteCurrentUsuarioEvent>((event, emit) async {
       emit(ProfileLoading());
 
       final resp1 = await _getCurrentUsuarioUseCase();
@@ -114,6 +118,32 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           customMessage: "Error al obtener el usuario",
         );
         emit(ProfileError(failure: failure));
+      }
+    });
+
+    on<OnDeleteUsuarioEvent>((event, emit) async {
+      emit(ProfileLoading());
+
+      final resp = await _getCurrentUsuarioUseCase();
+      Usuario? usuario;
+
+      resp.fold((f) => emit(ProfileError(failure: f)), (u) => usuario = u);
+
+      if (usuario != null) {
+        final resp2 = await _deleteOtherUserUsecase(event.usuario.id);
+
+        resp2.fold(
+          (f) => emit(ProfileError(failure: f)),
+          (u) => emit(ProfileAdministracion(usuario: usuario!)),
+        );
+      } else {
+        emit(
+          ProfileError(
+            failure: ServerFailure(
+              customMessage: "Error al obtener el usuario",
+            ),
+          ),
+        );
       }
     });
 
@@ -321,8 +351,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if (usuarios != null) {
         resp.fold(
           (f) => emit(ProfileError(failure: f)),
-          (v) =>
-              emit(ProfileAdministracionUsuarios(usuarios: usuarios)),
+          (v) => emit(ProfileAdministracionUsuarios(usuarios: usuarios)),
         );
       } else {
         emit(
