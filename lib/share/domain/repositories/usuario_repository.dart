@@ -8,6 +8,7 @@ abstract class UsuarioRepository {
   Future<Either<Failure,List<Usuario>>> getAllUsers();
   Future<Either<Failure, void>> updateUser(Usuario usuario);
   Future<Either<Failure, void>> deleteUser(String id);
+  Future<Either<Failure, void>> deleteOtherUser(String id);
   Future<Either<Failure,void>> cerrarSesion();
   Future<Either<Failure,User>> getCurrentUser();
   Future<Either<Failure,Usuario>> getCurrentUsuario();

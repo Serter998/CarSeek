@@ -12,12 +12,18 @@ class OnUpdateUsuarioEvent extends ProfileEvent {
   OnUpdateUsuarioEvent({required this.usuario});
 }
 
-class OnDeleteUsuarioEvent extends ProfileEvent {}
+class OnDeleteCurrentUsuarioEvent extends ProfileEvent {}
 
 class OnDeleteVehiculoEvent extends ProfileEvent {
   final Vehiculo vehiculo;
 
   OnDeleteVehiculoEvent({required this.vehiculo});
+}
+
+class OnDeleteUsuarioEvent extends ProfileEvent {
+  final Usuario usuario;
+
+  OnDeleteUsuarioEvent({required this.usuario});
 }
 
 class OnEnterEditVehicleEvent extends ProfileEvent {}
