@@ -1,4 +1,3 @@
-// VehiculoDetalleSheet.dart
 import 'package:flutter/material.dart';
 import 'package:car_seek/share/domain/entities/vehiculo.dart';
 
@@ -132,30 +131,11 @@ class VehiculoDetalleSheet extends StatelessWidget {
               ],
 
               const SizedBox(height: 24),
+
+              // Verificar y Rechazar en una fila
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextButton.icon(
-                      onPressed: () => _confirmarAccion(context, 'Eliminar', () => onEliminar(vehiculo)),
-                      icon: Icon(Icons.delete_forever, color: Colors.red.shade800),
-                      label: Text(
-                        'Eliminar',
-                        style: TextStyle(color: Colors.red.shade800, fontWeight: FontWeight.bold),
-                      ),
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
                   ElevatedButton.icon(
                     onPressed: () => _confirmarAccion(context, 'Verificar', () => onAprobar(vehiculo)),
                     icon: const Icon(Icons.check),
@@ -172,6 +152,32 @@ class VehiculoDetalleSheet extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+
+              const SizedBox(height: 12),
+
+              // Botón de Eliminar debajo
+              Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: TextButton.icon(
+                    onPressed: () => _confirmarAccion(context, 'Eliminar', () => onEliminar(vehiculo)),
+                    icon: Icon(Icons.delete_forever, color: Colors.red.shade800),
+                    label: Text(
+                      'Eliminar',
+                      style: TextStyle(color: Colors.red.shade800, fontWeight: FontWeight.bold),
+                    ),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
