@@ -18,7 +18,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 
 import 'core/constants/app_routes.dart';
-import 'core/themes/theme_controller.dart'; // <-- Asegúrate de importar esto
+import 'core/themes/theme_controller.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
         builder: (context, themeMode, _) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: AppThemeLight(selectedColor: 3).theme(),
+            theme: AppThemeLight(selectedColor: 0).theme(),
             darkTheme: AppTheme(selectedColor: 0).theme(),
             themeMode: themeMode,
             title: "CarSeek",
