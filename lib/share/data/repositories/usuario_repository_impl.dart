@@ -52,6 +52,39 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
   }
 
   @override
+  Future<Either<Failure, void>> deleteOtherUser(String id) async {
+    try {
+      return Right(await userSource.deleteOtherUser(id));
+    } on AuthException catch (e) {
+      if (e.toString().contains('SocketException') ||
+          e.toString().contains('Failed host lookup')) {
+        return const Left(
+          NetworkFailure(errorCode: 'no_internet', statusCode: 503),
+        );
+      }
+      return Left(AuthFailure(customMessage: 'Error al borrar el usuario'));
+    } on PostgrestException catch (e) {
+      return Left(
+        DatabaseFailure(
+          customMessage: 'Error al borrar el usuario',
+          errorCode: 'user_query_failed',
+          statusCode: 500,
+        ),
+      );
+    } on SocketException catch (_) {
+      return const Left(
+        NetworkFailure(errorCode: 'no_internet', statusCode: 503),
+      );
+    } on TimeoutException catch (_) {
+      return const Left(
+        TimeoutFailure(errorCode: 'user_fetch_timeout', statusCode: 408),
+      );
+    } catch (e) {
+      return Left(ServerFailure(errorCode: 'unknown_error', statusCode: 500));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<Usuario>>> getAllUsers() async {
     try {
       List<UsuarioModel>? usuarios = await userSource.getAllUsers();

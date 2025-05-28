@@ -5,41 +5,45 @@ class VehiculoDetalleSheet extends StatelessWidget {
   final Vehiculo vehiculo;
   final void Function(Vehiculo vehiculo) onAprobar;
   final void Function(Vehiculo vehiculo) onRechazar;
+  final void Function(Vehiculo vehiculo) onEliminar;
 
   const VehiculoDetalleSheet({
     super.key,
     required this.vehiculo,
     required this.onAprobar,
     required this.onRechazar,
+    required this.onEliminar,
   });
 
   void _confirmarAccion(
-    BuildContext context,
-    String accion,
-    VoidCallback onConfirmar,
-  ) {
+      BuildContext context,
+      String accion,
+      VoidCallback onConfirmar,
+      ) {
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: Text('$accion vehículo'),
-            content: Text(
-              '¿Estás seguro de que quieres $accion este vehículo?',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancelar'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  onConfirmar();
-                },
-                child: Text(accion),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: Text('$accion vehículo'),
+        content: Text(
+          '¿Estás seguro de que quieres $accion este vehículo?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
           ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              onConfirmar();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: accion == 'Eliminar' ? Colors.red : null,
+            ),
+            child: Text(accion),
+          ),
+        ],
+      ),
     );
   }
 
@@ -105,22 +109,13 @@ class VehiculoDetalleSheet extends StatelessWidget {
               _verificacionEstado(context),
               const SizedBox(height: 16),
 
-              _infoRow(
-                Icons.directions_car,
-                '${vehiculo.marca} ${vehiculo.modelo}',
-              ),
+              _infoRow(Icons.directions_car, '${vehiculo.marca} ${vehiculo.modelo}'),
               _infoRow(Icons.calendar_today, 'Año: ${vehiculo.anio}'),
               _infoRow(Icons.speed, 'Kilómetros: ${vehiculo.kilometros} km'),
               _infoRow(Icons.bolt, 'Potencia: ${vehiculo.cv} CV'),
-              _infoRow(
-                Icons.local_gas_station,
-                'Combustible: ${vehiculo.tipoCombustible.name}',
-              ),
-              _infoRow(Icons.eco, 'Etiqueta: ${vehiculo.tipoEtiqueta.name}'),
-              _infoRow(
-                Icons.attach_money,
-                'Precio: €${vehiculo.precio.toStringAsFixed(2)}',
-              ),
+              _infoRow(Icons.local_gas_station, 'Combustible: ${vehiculo.tipoCombustible.nombre}'),
+              _infoRow(Icons.eco, 'Etiqueta: ${vehiculo.tipoEtiqueta.nombre}'),
+              _infoRow(Icons.attach_money, 'Precio: €${vehiculo.precio.toStringAsFixed(2)}'),
 
               if (vehiculo.ubicacion != null)
                 _infoRow(Icons.location_on_outlined, vehiculo.ubicacion!),
@@ -136,26 +131,53 @@ class VehiculoDetalleSheet extends StatelessWidget {
               ],
 
               const SizedBox(height: 24),
+
+              // Verificar y Rechazar en una fila
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   ElevatedButton.icon(
-                    onPressed:
-                        () => _confirmarAccion(context, 'Verificar', () => onAprobar(vehiculo)),
+                    onPressed: () => _confirmarAccion(context, 'Verificar', () => onAprobar(vehiculo)),
                     icon: const Icon(Icons.check),
                     label: const Text('Verificar'),
                   ),
                   const SizedBox(width: 12),
                   OutlinedButton.icon(
+                    onPressed: () => _confirmarAccion(context, 'Rechazar', () => onRechazar(vehiculo)),
+                    icon: const Icon(Icons.close),
+                    label: const Text('Rechazar'),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.red,
                       side: const BorderSide(color: Colors.red),
                     ),
-                    onPressed: () => _confirmarAccion(context, 'Rechazar', () => onRechazar(vehiculo)),
-                    icon: const Icon(Icons.close),
-                    label: const Text('Rechazar'),
                   ),
                 ],
+              ),
+
+              const SizedBox(height: 12),
+
+              // Botón de Eliminar debajo
+              Center(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: TextButton.icon(
+                    onPressed: () => _confirmarAccion(context, 'Eliminar', () => onEliminar(vehiculo)),
+                    icon: Icon(Icons.delete_forever, color: Colors.red.shade800),
+                    label: Text(
+                      'Eliminar',
+                      style: TextStyle(color: Colors.red.shade800, fontWeight: FontWeight.bold),
+                    ),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

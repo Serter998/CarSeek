@@ -84,7 +84,7 @@ class _ProfileInitialScreenState extends State<ProfileInitialScreen> {
     );
 
     if (confirmed == true) {
-      context.read<ProfileBloc>().add(OnDeleteUsuarioEvent());
+      context.read<ProfileBloc>().add(OnDeleteCurrentUsuarioEvent());
     }
   }
 

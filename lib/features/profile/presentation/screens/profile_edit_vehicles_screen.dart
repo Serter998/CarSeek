@@ -12,7 +12,14 @@ class ProfileEditVehiclesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
+      body: vehiculos.isEmpty
+          ? const Center(
+        child: Text(
+          'No tienes vehículos para editar.',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+      )
+          : ListView.builder(
         itemCount: vehiculos.length,
         itemBuilder: (context, index) {
           final vehiculo = vehiculos[index];

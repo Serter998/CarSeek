@@ -7,6 +7,7 @@ abstract class UsuarioSource {
   Future<List<UsuarioModel>?> getAllUsers();
   Future<void> updateUser(UsuarioModel usuario);
   Future<void> deleteUser(String id);
+  Future<void> deleteOtherUser(String id);
   Future<void> cerrarSesion();
   Future<User?> getCurrentUser();
   Future<UsuarioModel?> getCurrentUsuario();
@@ -46,6 +47,35 @@ class UsuarioSourceImpl implements UsuarioSource {
 
     // Cierra sesión después de eliminar
     await supabaseClient.auth.signOut();
+
+    if (response.status != 200) {
+      throw Exception('Error al eliminar el usuario: ${response.data}');
+    }
+  }
+
+  @override
+  Future<void> deleteOtherUser(String id) async {
+    final session = supabaseClient.auth.currentSession;
+    if (session == null) {
+      throw Exception('No hay sesión activa');
+    }
+    final token = session.accessToken;
+
+    // Elimina datos relacionados
+    await supabaseClient.from('vehiculos').delete().eq('id_usuario', id);
+    await supabaseClient.from('mensajes').delete().eq('id_remitente', id);
+    await supabaseClient.from('valoraciones').delete().eq('id_usuario_que_valora', id);
+    await supabaseClient.from('usuarios').delete().eq('id_usuario', id);
+
+    // Llama a la función de borde
+    final response = await supabaseClient.functions.invoke(
+      'delete-user',
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: {'user_id': id},
+    );
 
     if (response.status != 200) {
       throw Exception('Error al eliminar el usuario: ${response.data}');

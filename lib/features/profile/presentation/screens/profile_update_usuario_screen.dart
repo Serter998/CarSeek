@@ -1,6 +1,7 @@
 import 'package:car_seek/core/services/validation_service.dart';
 import 'package:car_seek/core/widgets/custom_snack_bar.dart';
 import 'package:car_seek/features/profile/presentation/blocs/profile_bloc.dart';
+import 'package:car_seek/share/domain/enums/tipo_usuario.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,6 +41,7 @@ class _UsuarioFormScreenState extends State<ProfileUpdateUsuarioScreen> {
     nombreController.text = widget.usuario.nombre ?? "";
     telefonoController.text = widget.usuario.telefono ?? "";
     ubicacionController.text = widget.usuario.ubicacion ?? "";
+    tipoUsuarioSeleccionado = widget.usuario.tipoUsuario.nombre ?? "";
     super.initState();
   }
 
@@ -286,7 +288,7 @@ class _UsuarioFormScreenState extends State<ProfileUpdateUsuarioScreen> {
           Expanded(
             child: Text(
               value[0].toUpperCase() + value.substring(1),
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.bodySmall,
               textAlign: TextAlign.left,
             ),
           ),

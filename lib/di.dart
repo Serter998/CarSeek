@@ -16,6 +16,7 @@ import 'package:car_seek/share/data/source/vehiculo_source.dart';
 import 'package:car_seek/share/domain/repositories/vehiculo_repository.dart';
 import 'package:car_seek/share/domain/use_cases/usuario/cerrar_sesion_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/forgot_password_usecase.dart';
+import 'package:car_seek/share/domain/use_cases/usuario/delete_other_user_usecase.dart';
 import 'package:car_seek/share/domain/use_cases/usuario/delete_user_usecase.dart';
 import 'package:car_seek/share/domain/use_cases/usuario/get_all_users_usecase.dart';
 import 'package:car_seek/share/domain/use_cases/usuario/get_current_user_usecase.dart';
@@ -101,6 +102,7 @@ Future<void> init() async {
 
   di.registerLazySingleton(() => CerrarSesionUseCase(repository: di()));
   di.registerLazySingleton(() => DeleteUserUsecase(repository: di()));
+  di.registerLazySingleton(() => DeleteOtherUserUsecase(repository: di()));
   di.registerLazySingleton(() => GetAllUsersUsecase(repository: di()));
   di.registerLazySingleton(() => GetCurrentUserUseCase(repository: di()));
   di.registerLazySingleton(() => GetCurrentUsuarioUseCase(repository: di()));
@@ -187,5 +189,6 @@ Future<void> init() async {
     di<DeleteVehiculoUseCase>(),
     di<GetAllVehiculosUseCase>(),
     di<GetAllUsersUsecase>(),
+    di<DeleteOtherUserUsecase>(),
   ));
 }
