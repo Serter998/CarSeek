@@ -29,6 +29,8 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final isWide = MediaQuery.of(context).size.width > 800;
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
 
     return BlocBuilder<FavoriteVehiclesBloc, FavoriteVehiclesState>(
       builder: (context, state) {
@@ -46,9 +48,10 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
               ? null
               : AppBar(
             backgroundColor: AppColors.primary,
+            iconTheme: const IconThemeData(color: Colors.black),
             title: Text(
               widget.vehiculo.titulo,
-              style: const TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18, color: Colors.black),
             ),
             actions: [
               FavoriteButton(
@@ -57,7 +60,7 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
               ),
             ],
           ),
-          body: SafeArea(  // Aquí envuelvo todo en SafeArea para respetar zonas seguras
+          body: SafeArea(
             child: SingleChildScrollView(
               padding: EdgeInsets.all(isWide ? 32 : 16),
               child: Center(
@@ -183,7 +186,7 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
                               padding: const EdgeInsets.all(16),
                               margin: const EdgeInsets.only(top: 12),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.05),
+                                color: isDarkMode ? Colors.white.withOpacity(0.05) : Colors.grey.shade100,
                                 borderRadius: BorderRadius.circular(12),
                                 boxShadow: [
                                   BoxShadow(
@@ -196,21 +199,21 @@ class _VehicleDetailScreenState extends State<VehicleDetailScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                  Text(
                                     'Descripción del vehículo',
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.white,
+                                      color: AppColors.primary,
                                     ),
                                   ),
                                   const SizedBox(height: 12),
                                   Text(
                                     widget.vehiculo.descripcion!,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 16,
                                       height: 1.5,
-                                      color: Colors.white70,
+                                      color: isDarkMode ? Colors.white70 : Colors.black87,
                                     ),
                                   ),
                                 ],

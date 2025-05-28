@@ -203,11 +203,13 @@ class _HomeContent extends StatelessWidget {
                               context.read<FavoriteVehiclesBloc>().add(ToggleVehiculoFavoritoEvent(vehiculo: vehiculo));
                             },
                             onTap: () {
+                              final favoriteBloc = BlocProvider.of<FavoriteVehiclesBloc>(context);
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => BlocProvider.value(
-                                    value: BlocProvider.of<FavoriteVehiclesBloc>(context),
+                                    value: favoriteBloc,
                                     child: VehicleDetailScreen(vehiculo: vehiculo),
                                   ),
                                 ),
