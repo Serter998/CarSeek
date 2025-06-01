@@ -3,6 +3,8 @@ import 'package:car_seek/core/themes/app_theme_light.dart';
 import 'package:car_seek/di.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/screens/auth_screen.dart';
+import 'package:car_seek/features/chat/presentation/blocs/chat_bloc.dart';
+import 'package:car_seek/features/chat/presentation/screens/chat_screen.dart';
 import 'package:car_seek/features/favorites/presentation/blocs/favorite_vehicles_bloc.dart';
 import 'package:car_seek/features/favorites/presentation/screens/favorite_vehicles_screen.dart';
 import 'package:car_seek/features/home/presentation/blocs/vehicle_list_bloc.dart';
@@ -44,6 +46,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_) => GetIt.instance.get<VehicleListBloc>()),
         BlocProvider(create: (_) => GetIt.instance.get<ProfileBloc>()),
         BlocProvider(create: (_) => GetIt.instance.get<FavoriteVehiclesBloc>()),
+        BlocProvider(create: (_) => GetIt.instance.get<ChatBloc>()),
       ],
       child: ValueListenableBuilder<ThemeMode>(
         valueListenable: ThemeController.themeModeNotifier,
@@ -60,6 +63,7 @@ class MyApp extends StatelessWidget {
               AppRoutes.sell: (context) => const SellScreen(),
               AppRoutes.favorites: (context) => const FavoritesScreen(),
               AppRoutes.profile: (context) => const ProfileScreen(),
+              AppRoutes.chat: (context) => const ChatScreen(),
             },
             initialRoute: AppRoutes.initial,
           );
