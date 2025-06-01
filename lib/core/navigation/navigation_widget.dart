@@ -25,7 +25,7 @@ class NavigationWidget {
         ),
         BottomNavigationBarItem(
             icon: Icon(Icons.message),
-            key: Key("s"),
+            key: Key(AppRoutes.chat),
             label: "Chat"
         ),
         BottomNavigationBarItem(
@@ -47,7 +47,7 @@ class NavigationWidget {
             NavigationService.navigateTo(context, AppRoutes.sell);
             break;
           case 3:
-            NavigationService.navigateTo(context, AppRoutes.initial);
+            NavigationService.navigateTo(context, AppRoutes.chat);
             break;
           case 4:
             NavigationService.navigateTo(context, AppRoutes.profile);
