@@ -1,4 +1,3 @@
-import 'package:car_seek/core/navigation/navigation_widget.dart';
 import 'package:car_seek/core/themes/theme_controller.dart';
 import 'package:car_seek/features/profile/presentation/blocs/profile_bloc.dart';
 import 'package:car_seek/features/profile/presentation/screens/administracion/profile_administracion_screen.dart';
@@ -159,10 +158,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   usuarios: state.usuarios);
           }
         },
-      ),
-      bottomNavigationBar: NavigationWidget.customBottonNavigationBar(
-        context,
-        4,
       ),
     );
   }

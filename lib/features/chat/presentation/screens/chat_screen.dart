@@ -1,4 +1,3 @@
-import 'package:car_seek/core/navigation/navigation_widget.dart';
 import 'package:car_seek/features/chat/presentation/blocs/chat_bloc.dart';
 import 'package:car_seek/features/chat/presentation/screens/chat_error_screen.dart';
 import 'package:car_seek/features/chat/presentation/screens/chat_initial_screen.dart';
@@ -73,10 +72,6 @@ class _ChatScreenState extends State<ChatScreen> {
               return ChatErrorScreen(failure: state.failure);
           }
         },
-      ),
-      bottomNavigationBar: NavigationWidget.customBottonNavigationBar(
-        context,
-        3,
       ),
     );
   }

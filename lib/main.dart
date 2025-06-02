@@ -4,15 +4,11 @@ import 'package:car_seek/di.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:car_seek/features/auth/presentation/screens/auth_screen.dart';
 import 'package:car_seek/features/chat/presentation/blocs/chat_bloc.dart';
-import 'package:car_seek/features/chat/presentation/screens/chat_screen.dart';
 import 'package:car_seek/features/favorites/presentation/blocs/favorite_vehicles_bloc.dart';
-import 'package:car_seek/features/favorites/presentation/screens/favorite_vehicles_screen.dart';
 import 'package:car_seek/features/home/presentation/blocs/vehicle_list_bloc.dart';
-import 'package:car_seek/features/home/presentation/screens/home_screen.dart';
+import 'package:car_seek/features/navigation/presentation/main_scrreen.dart';
 import 'package:car_seek/features/profile/presentation/blocs/profile_bloc.dart';
-import 'package:car_seek/features/profile/presentation/screens/profile_screen.dart';
 import 'package:car_seek/features/sell/presentation/blocs/sell_bloc.dart';
-import 'package:car_seek/features/sell/presentation/screens/sell_screen.dart';
 import 'package:car_seek/supabase_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,11 +55,7 @@ class MyApp extends StatelessWidget {
             title: "CarSeek",
             routes: {
               AppRoutes.initial: (context) => const AuthScreen(),
-              AppRoutes.home: (context) => const HomeScreen(),
-              AppRoutes.sell: (context) => const SellScreen(),
-              AppRoutes.favorites: (context) => const FavoritesScreen(),
-              AppRoutes.profile: (context) => const ProfileScreen(),
-              AppRoutes.chat: (context) => const ChatScreen(),
+              AppRoutes.main: (context) => const MainScreen(),
             },
             initialRoute: AppRoutes.initial,
           );
