@@ -7,6 +7,7 @@ import 'package:car_seek/features/favorites/presentation/blocs/favorite_vehicles
 import 'package:car_seek/features/favorites/presentation/screens/favorite_vehicles_screen.dart';
 import 'package:car_seek/features/home/presentation/blocs/vehicle_list_bloc.dart';
 import 'package:car_seek/features/home/presentation/screens/home_screen.dart';
+import 'package:car_seek/features/navigation/presentation/main_scrreen.dart';
 import 'package:car_seek/features/profile/presentation/blocs/profile_bloc.dart';
 import 'package:car_seek/features/profile/presentation/screens/profile_screen.dart';
 import 'package:car_seek/features/sell/presentation/blocs/sell_bloc.dart';
@@ -56,10 +57,7 @@ class MyApp extends StatelessWidget {
             title: "CarSeek",
             routes: {
               AppRoutes.initial: (context) => const AuthScreen(),
-              AppRoutes.home: (context) => const HomeScreen(),
-              AppRoutes.sell: (context) => const SellScreen(),
-              AppRoutes.favorites: (context) => const FavoritesScreen(),
-              AppRoutes.profile: (context) => const ProfileScreen(),
+              AppRoutes.main: (context) => const MainScreen(),
             },
             initialRoute: AppRoutes.initial,
           );

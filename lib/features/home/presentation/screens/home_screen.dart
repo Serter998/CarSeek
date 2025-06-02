@@ -3,7 +3,6 @@ import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:car_seek/core/constants/app_colors.dart';
-import 'package:car_seek/core/navigation/navigation_widget.dart';
 import 'package:car_seek/features/favorites/presentation/blocs/favorite_vehicles_bloc.dart';
 import 'package:car_seek/features/home/presentation/blocs/vehicle_list_bloc.dart';
 import 'package:car_seek/features/home/presentation/screens/vehicle_detail_screen.dart';
@@ -228,7 +227,6 @@ class _HomeContent extends StatelessWidget {
           ),
         ],
       ),
-      bottomNavigationBar: NavigationWidget.customBottonNavigationBar(context, 0),
     );
   }
 }
