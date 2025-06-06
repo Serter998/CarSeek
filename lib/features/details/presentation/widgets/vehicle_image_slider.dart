@@ -5,14 +5,14 @@ class VehicleImageSlider extends StatelessWidget {
   final List<String> imagenes;
   final int currentPage;
   final ValueChanged<int> onPageChanged;
-  final PageController pageController;  // <- nuevo parámetro
+  final PageController pageController;
 
   const VehicleImageSlider({
     super.key,
     required this.imagenes,
     required this.currentPage,
     required this.onPageChanged,
-    required this.pageController,   // <- lo recibes aquí
+    required this.pageController,
   });
 
   @override
@@ -26,7 +26,7 @@ class VehicleImageSlider extends StatelessWidget {
           child: AspectRatio(
             aspectRatio: 4 / 3,
             child: PageView.builder(
-              controller: pageController, // <- usa el controlador externo
+              controller: pageController,
               itemCount: imagenes.length,
               onPageChanged: onPageChanged,
               itemBuilder: (context, index) {

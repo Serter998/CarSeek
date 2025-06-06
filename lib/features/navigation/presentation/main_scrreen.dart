@@ -3,24 +3,34 @@ import 'package:car_seek/features/favorites/presentation/screens/favorite_vehicl
 import 'package:car_seek/features/home/presentation/screens/home_screen.dart';
 import 'package:car_seek/features/profile/presentation/screens/profile_screen.dart';
 import 'package:car_seek/features/sell/presentation/screens/sell_screen.dart';
+import 'package:car_seek/share/domain/entities/conversacion.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final int initialIndex;
+  final Conversacion? initialConversacion;
+  const MainScreen({super.key, this.initialIndex = 0, this.initialConversacion});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
+  late int _selectedIndex;
+  late final List<Widget> _screens;
 
-  final List<Widget> _screens = [
-    HomeScreen(),
-    FavoritesScreen(),
-    ChatScreen(),
-    ProfileScreen(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialIndex;
+
+    _screens = [
+      HomeScreen(),
+      FavoritesScreen(),
+      ChatScreen(conversacion: widget.initialConversacion),
+      ProfileScreen(),
+    ];
+  }
 
   void _onTabTapped(int index) {
     if (index == 2) {

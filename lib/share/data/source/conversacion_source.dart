@@ -5,6 +5,11 @@ abstract class ConversacionSource {
   Future<List<ConversacionModel>?> getAllConversacionesByCurrentUser();
   Future<void> createConversacion(ConversacionModel conversacion);
   Future<void> deleteConversacion(String id);
+  Future<ConversacionModel?> getConversacionByUsuariosYNombre({
+    required String usuario1,
+    required String usuario2,
+    required String nombre,
+  });
 }
 
 class ConversacionSourceImpl implements ConversacionSource {
@@ -36,5 +41,24 @@ class ConversacionSourceImpl implements ConversacionSource {
         .or('usuario1.eq.$idUsuario,usuario2.eq.$idUsuario');
 
     return result.map((json) => ConversacionModel.fromJson(json)).toList();
+  }
+
+  @override
+  Future<ConversacionModel?> getConversacionByUsuariosYNombre({
+    required String usuario1,
+    required String usuario2,
+    required String nombre,
+  }) async {
+    final response = await supabaseClient
+        .from('conversaciones')
+        .select()
+        .or(
+        'and(usuario1.eq.$usuario1,usuario2.eq.$usuario2),and(usuario1.eq.$usuario2,usuario2.eq.$usuario1)'
+    )
+        .eq('nombre', nombre)
+        .maybeSingle();
+
+    if (response == null) return null;
+    return ConversacionModel.fromJson(response);
   }
 }

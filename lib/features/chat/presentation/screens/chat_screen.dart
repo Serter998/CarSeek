@@ -2,11 +2,13 @@ import 'package:car_seek/features/chat/presentation/blocs/chat_bloc.dart';
 import 'package:car_seek/features/chat/presentation/screens/chat_error_screen.dart';
 import 'package:car_seek/features/chat/presentation/screens/chat_initial_screen.dart';
 import 'package:car_seek/features/chat/presentation/screens/chat_mensajes_screen.dart';
+import 'package:car_seek/share/domain/entities/conversacion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  final Conversacion? conversacion;
+  const ChatScreen({super.key, this.conversacion});
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -15,8 +17,17 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
+    final chatBloc = context.read<ChatBloc>();
     final state = context.read<ChatBloc>().state;
-    context.read<ChatBloc>().add(OnLoadInitialChatsEvent());
+
+    if (widget.conversacion != null) {
+      Future.delayed(const Duration(milliseconds: 0), () {
+        if (mounted) {
+          chatBloc.add(OnOpenChatEvent(conversacion: widget.conversacion!));
+        }
+      });
+    }
+
     super.initState();
   }
 

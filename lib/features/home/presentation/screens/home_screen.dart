@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:car_seek/core/constants/app_colors.dart';
 import 'package:car_seek/features/favorites/presentation/blocs/favorite_vehicles_bloc.dart';
 import 'package:car_seek/features/home/presentation/blocs/vehicle_list_bloc.dart';
-import 'package:car_seek/features/home/presentation/screens/vehicle_detail_screen.dart';
+import 'package:car_seek/features/details/presentation/screens/vehicle_detail_screen.dart';
 import 'package:car_seek/features/home/presentation/widgets/filtro_activo_widget.dart';
 import 'package:car_seek/features/home/presentation/widgets/filtro_dropdown.dart';
 import 'package:car_seek/features/home/presentation/widgets/responsive_vehicle_grid.dart';

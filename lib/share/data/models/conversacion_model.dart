@@ -26,12 +26,10 @@ class ConversacionModel extends Conversacion {
       'usuario2': usuario2,
     };
 
-    // Solo incluir la ID si no es nula
-    if (id != null) {
+    if (id != null && id.isNotEmpty) {
       data['id'] = id;
     }
 
-    // Incluir createdAt si no es nulo (formato ISO8601 en UTC)
     if (createdAt != null) {
       data['created_at'] = createdAt!.toUtc().toIso8601String();
     }

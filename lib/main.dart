@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
+import 'package:flutter/services.dart';
+
 
 import 'core/constants/app_routes.dart';
 import 'core/themes/theme_controller.dart';
@@ -47,6 +49,15 @@ class MyApp extends StatelessWidget {
       child: ValueListenableBuilder<ThemeMode>(
         valueListenable: ThemeController.themeModeNotifier,
         builder: (context, themeMode, _) {
+          final isDarkMode = themeMode == ThemeMode.dark;
+
+          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
+            systemNavigationBarColor: isDarkMode ? Colors.black : Colors.white,
+            systemNavigationBarIconBrightness: isDarkMode ? Brightness.light : Brightness.dark,
+          ));
+
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: AppThemeLight(selectedColor: 0).theme(),

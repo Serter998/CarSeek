@@ -26,7 +26,7 @@ class ConversacionRepositoryImpl implements ConversacionRepository {
       return Left(NetworkFailure());
     } catch (e) {
       return Left(DatabaseFailure(
-        customMessage: 'Error al crear la conversación',
+        customMessage: 'Error al crear la conversación: ${e.toString()}',
         errorCode: 'conversation_creation_failed',
       ));
     }
@@ -68,6 +68,31 @@ class ConversacionRepositoryImpl implements ConversacionRepository {
       return Left(DatabaseFailure(
         customMessage: 'Error al obtener lista de conversaciones',
         errorCode: 'conversation_list_error',
+      ));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ConversacionModel?>> getConversacionByUsuariosYNombre({
+    required String usuario1,
+    required String usuario2,
+    required String nombre,
+  }) async {
+    try {
+      final conversacion = await conversacionSource.getConversacionByUsuariosYNombre(
+        usuario1: usuario1,
+        usuario2: usuario2,
+        nombre: nombre,
+      );
+      return Right(conversacion);
+    } on TimeoutException {
+      return Left(TimeoutFailure());
+    } on SocketException {
+      return Left(NetworkFailure());
+    } catch (e) {
+      return Left(DatabaseFailure(
+        customMessage: 'Error al buscar conversación',
+        errorCode: 'conversation_search_error',
       ));
     }
   }
