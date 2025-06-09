@@ -1,3 +1,5 @@
+import 'package:car_seek/core/errors/failure.dart';
+import 'package:car_seek/core/errors/generic_failure.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:car_seek/share/domain/entities/vehiculo.dart';
 import 'package:car_seek/share/data/models/conversacion_model.dart';
@@ -32,39 +34,43 @@ class VehicleDetailBloc extends Bloc<VehicleDetailEvent, VehicleDetailState> {
         nombre: event.vehiculo.titulo,
       );
 
-      result.fold(
-            (failure) => emit(VehicleDetailError(message: 'Error al buscar conversación: ${failure.message}')),
-            (conversacionExistente) async {
-          if (conversacionExistente == null) {
-            final nuevaConversacion = ConversacionModel(
-              id: '',
-              nombre: event.vehiculo.titulo,
-              usuario1: currentUser.id,
-              usuario2: event.vehiculo.idUsuario,
-              createdAt: DateTime.now(),
-            );
 
-            final createResult = await conversacionRepository.createConversacion(nuevaConversacion);
+      if (result.isLeft()) {
+        final failure = result.swap().getOrElse(() => const GenericFailure());
+        emit(VehicleDetailError(message: 'Error al buscar conversación: ${failure.message}'));
+        return;
+      }
 
-            if (createResult.isLeft()) {
-              emit(VehicleDetailError(message: 'Error al crear conversación'));
-              return;
-            }
+      var conversacionExistente = result.getOrElse(() => null);
 
-            final nuevoResult = await conversacionRepository.getConversacionByUsuariosYNombre(
-              usuario1: currentUser.id,
-              usuario2: event.vehiculo.idUsuario,
-              nombre: event.vehiculo.titulo,
-            );
+      if (conversacionExistente == null) {
+        final nuevaConversacion = ConversacionModel(
+          id: '',
+          nombre: event.vehiculo.titulo,
+          usuario1: currentUser.id,
+          usuario2: event.vehiculo.idUsuario,
+          createdAt: DateTime.now(),
+        );
 
-            conversacionExistente = nuevoResult.getOrElse(() => null);
-          }
+        final createResult = await conversacionRepository.createConversacion(nuevaConversacion);
 
-          if (conversacionExistente != null) {
-            emit(VehicleDetailNavigateToChat(conversacion: conversacionExistente));
-          }
-        },
-      );
+        if (createResult.isLeft()) {
+          emit(VehicleDetailError(message: 'Error al crear conversación'));
+          return;
+        }
+
+        final nuevoResult = await conversacionRepository.getConversacionByUsuariosYNombre(
+          usuario1: currentUser.id,
+          usuario2: event.vehiculo.idUsuario,
+          nombre: event.vehiculo.titulo,
+        );
+
+        conversacionExistente = nuevoResult.getOrElse(() => null);
+      }
+
+      if (conversacionExistente != null) {
+        emit(VehicleDetailNavigateToChat(conversacion: conversacionExistente));
+      }
     });
   }
 }
