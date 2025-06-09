@@ -47,66 +47,87 @@ class _SellCreateTitleScreenState extends State<SellCreateTitleScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 20),
-          child: Center(
-            child: Card(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: EdgeInsets.only(
+                left: 16,
+                right: 16,
+                top: 20,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 20,
               ),
-              elevation: 4,
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Image.asset(
-                        "assets/images/VentaVehiculo.png",
-                        height: 220,
-                        width: 240,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      "¿Cuál es el título de la venta de tu vehículo?",
-                      style: TextStyles.titleText,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "Un buen título es breve, claro y atractivo para los compradores.",
-                      style: TextStyles.subtitleText,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    TextField(
-                      controller: _tituloController,
-                      decoration: InputDecoration(
-                        labelText: 'Titulo*',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    children: [
+                      Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 14,
+                        elevation: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: Image.asset(
+                                  "assets/images/VentaVehiculo.png",
+                                  height: 200,
+                                  width: 220,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              Text(
+                                "¿Cuál es el título de la venta de tu vehículo?",
+                                style: TextStyles.titleText,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                "Un buen título es breve, claro y atractivo para los compradores.",
+                                style: TextStyles.subtitleText,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 24),
+                              TextField(
+                                controller: _tituloController,
+                                decoration: InputDecoration(
+                                  labelText: 'Título*',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 14,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              Row(
+                                children: [
+                                  ContinueButton(
+                                    onPressed: _continuar,
+                                    text: "Continuar",
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
-                      children: [
-                        ContinueButton(onPressed: _continuar, text: "Continuar"),
-                      ],
-                    ),
-                  ],
+                      const Spacer(),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );

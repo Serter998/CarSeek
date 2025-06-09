@@ -1,6 +1,7 @@
 import 'package:car_seek/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:car_seek/features/auth/data/sources/auth_source.dart';
 import 'package:car_seek/features/auth/domain/repositories/auth_repository.dart';
+import 'package:car_seek/features/chat/presentation/blocs/chat_bloc.dart';
 import 'package:car_seek/features/favorites/data/repositories/favorite_vehicle_repository_impl.dart';
 import 'package:car_seek/features/favorites/data/sources/favorito_source.dart';
 import 'package:car_seek/features/favorites/domain/repositories/favorite_repository.dart';
@@ -11,9 +12,22 @@ import 'package:car_seek/features/favorites/presentation/blocs/favorite_vehicles
 import 'package:car_seek/features/home/presentation/blocs/vehicle_list_bloc.dart';
 import 'package:car_seek/features/profile/presentation/blocs/profile_bloc.dart';
 import 'package:car_seek/features/sell/presentation/blocs/sell_bloc.dart';
+import 'package:car_seek/share/data/repositories/conversacion_repository_impl.dart';
+import 'package:car_seek/share/data/repositories/mensaje_repository_impl.dart';
 import 'package:car_seek/share/data/repositories/vehiculo_repository_impl.dart';
+import 'package:car_seek/share/data/source/conversacion_source.dart';
+import 'package:car_seek/share/data/source/mensaje_source.dart';
 import 'package:car_seek/share/data/source/vehiculo_source.dart';
+import 'package:car_seek/share/domain/repositories/conversacion_repository.dart';
+import 'package:car_seek/share/domain/repositories/mensaje_repository.dart';
 import 'package:car_seek/share/domain/repositories/vehiculo_repository.dart';
+import 'package:car_seek/share/domain/use_cases/conversacion/create_conversacion_usecase.dart';
+import 'package:car_seek/share/domain/use_cases/conversacion/delete_conversacion_usecase.dart';
+import 'package:car_seek/share/domain/use_cases/conversacion/get_all_conversaciones_by_current_user_usecase.dart';
+import 'package:car_seek/share/domain/use_cases/mensaje/create_mensaje_usecase.dart';
+import 'package:car_seek/share/domain/use_cases/mensaje/delete_mensaje_usecase.dart';
+import 'package:car_seek/share/domain/use_cases/mensaje/get_all_mensajes_by_conversacion_usecase.dart';
+import 'package:car_seek/share/domain/use_cases/mensaje/update_mensaje_usecase.dart';
 import 'package:car_seek/share/domain/use_cases/usuario/cerrar_sesion_usecase.dart';
 import 'package:car_seek/features/auth/domain/use_cases/forgot_password_usecase.dart';
 import 'package:car_seek/share/domain/use_cases/usuario/delete_other_user_usecase.dart';
@@ -190,5 +204,41 @@ Future<void> init() async {
     di<GetAllVehiculosUseCase>(),
     di<GetAllUsersUsecase>(),
     di<DeleteOtherUserUsecase>(),
+  ));
+
+  /*-------------*
+   * Inicio de Chats
+   *-------------*/
+
+  di.registerLazySingleton<ConversacionSource>(
+        () => ConversacionSourceImpl(dotenv.env['API_KEY'] ?? ''),
+  );
+  di.registerLazySingleton<MensajeSource>(
+        () => MensajeSourceImpl(dotenv.env['API_KEY'] ?? ''),
+  );
+
+  di.registerLazySingleton<ConversacionRepository>(
+        () => ConversacionRepositoryImpl(conversacionSource: di()),
+  );
+  di.registerLazySingleton<MensajeRepository>(
+        () => MensajeRepositoryImpl(mensajeSource: di()),
+  );
+
+  di.registerLazySingleton(() => CreateConversacionUsecase(repository: di()));
+  di.registerLazySingleton(() => DeleteConversacionUsecase(repository: di()));
+  di.registerLazySingleton(() => GetAllConversacionesByCurrentUserUseCase(repository: di()));
+  di.registerLazySingleton(() => CreateMensajeUsecase(repository: di()));
+  di.registerLazySingleton(() => DeleteMensajeUsecase(repository: di()));
+  di.registerLazySingleton(() => UpdateMensajeUsecase(repository: di()));
+  di.registerLazySingleton(() => GetAllMensajesByConversacionUsecase(repository: di()));
+
+  di.registerFactory(() => ChatBloc(
+    di<DeleteConversacionUsecase>(),
+    di<GetAllConversacionesByCurrentUserUseCase>(),
+    di<CreateMensajeUsecase>(),
+    di<DeleteMensajeUsecase>(),
+    di<GetAllMensajesByConversacionUsecase>(),
+    di<UpdateMensajeUsecase>(),
+    di<GetCurrentUsuarioUseCase>(),
   ));
 }
