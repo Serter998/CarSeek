@@ -64,17 +64,17 @@ class _ChatMensajesScreenState extends State<ChatMensajesScreen> {
 
     _mensajesChannel = supabase.channel('mensajes_changes')
         .onPostgresChanges(
-        event: PostgresChangeEvent.delete,
-        schema: 'public',
-        table: 'mensajes',
-        callback: (payload) {
-          final deletedMessage = MensajeModel.fromJson(payload.oldRecord);
-          if (deletedMessage.conversacionId == widget.conversacion.id) {
-            setState(() {
-              _mensajes.removeWhere((m) => m.id == deletedMessage.id);
-            });
-          }
+      event: PostgresChangeEvent.delete,
+      schema: 'public',
+      table: 'mensajes',
+      callback: (payload) {
+        final deletedMessage = MensajeModel.fromJson(payload.oldRecord);
+        if (deletedMessage.conversacionId == widget.conversacion.id) {
+          setState(() {
+            _mensajes.removeWhere((m) => m.id == deletedMessage.id);
+          });
         }
+      },
     )
         .subscribe();
   }
@@ -83,7 +83,7 @@ class _ChatMensajesScreenState extends State<ChatMensajesScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
-          0.0,
+          _scrollController.position.maxScrollExtent,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
@@ -99,7 +99,6 @@ class _ChatMensajesScreenState extends State<ChatMensajesScreen> {
       conversacionId: widget.conversacion.id,
       senderId: widget.currentUserId,
       context: texto,
-      createdAt: DateTime.now().toLocal(),
     );
 
     context.read<ChatBloc>().add(
@@ -111,10 +110,6 @@ class _ChatMensajesScreenState extends State<ChatMensajesScreen> {
 
     _controller.clear();
 
-    setState(() {
-      _mensajes.add(MensajeModel.fromEntity(nuevoMensaje));
-    });
-
     _scrollToBottom();
   }
 
@@ -122,19 +117,14 @@ class _ChatMensajesScreenState extends State<ChatMensajesScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Text('¿Eliminar mensaje?'),
         content: const Text('Este mensaje se eliminará permanentemente.'),
         actionsPadding: const EdgeInsets.only(right: 12, bottom: 8),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
-              'Cancelar',
-              style: TextStyle(color: Colors.grey),
-            ),
+            child: const Text('Cancelar', style: TextStyle(color: Colors.grey)),
           ),
           TextButton(
             onPressed: () {
@@ -175,58 +165,44 @@ class _ChatMensajesScreenState extends State<ChatMensajesScreen> {
             bottomRight: Radius.circular(isMe ? 0 : 16),
           ),
         ),
-        child: Column(
-          crossAxisAlignment:
-          isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Flexible(
-                  child: Text(
-                    mensaje.context,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+            Flexible(
+              child: Text(
+                mensaje.context,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+            if (isMe)
+              PopupMenuButton<String>(
+                padding: EdgeInsets.zero,
+                onSelected: (value) {
+                  if (value == 'delete') {
+                    _confirmarEliminarMensaje(mensaje);
+                  }
+                },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                if (isMe)
-                  PopupMenuButton<String>(
-                    padding: EdgeInsets.zero,
-                    onSelected: (value) {
-                      if (value == 'delete') {
-                        _confirmarEliminarMensaje(mensaje);
-                      }
-                    },
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    itemBuilder: (_) => [
-                      PopupMenuItem(
-                        value: 'delete',
-                        child: Row(
-                          children: const [
-                            Icon(Icons.delete_outline, color: Colors.red),
-                            SizedBox(width: 8),
-                            Text('Eliminar'),
-                          ],
-                        ),
-                      ),
-                    ],
-                    icon: Icon(
-                      Icons.more_vert,
-                      color: Colors.grey.shade600,
-                      size: 20,
+                itemBuilder: (_) => [
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Row(
+                      children: const [
+                        Icon(Icons.delete_outline, color: Colors.red),
+                        SizedBox(width: 8),
+                        Text('Eliminar'),
+                      ],
                     ),
                   ),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              dateFormat.format(mensaje.createdAt!),
-              style: Theme.of(context)
-                  .textTheme
-                  .labelSmall
-                  ?.copyWith(color: Colors.grey),
-            ),
+                ],
+                icon: Icon(
+                  Icons.more_vert,
+                  color: Colors.grey.shade600,
+                  size: 20,
+                ),
+              ),
           ],
         ),
       ),
@@ -244,7 +220,6 @@ class _ChatMensajesScreenState extends State<ChatMensajesScreen> {
           ),
           child: Column(
             children: [
-              // Mensajes
               Expanded(
                 child: StreamBuilder<List<Mensaje>>(
                   stream: _mensajesStream,
@@ -252,6 +227,7 @@ class _ChatMensajesScreenState extends State<ChatMensajesScreen> {
                     if (snapshot.hasData) {
                       _mensajes = snapshot.data!;
                       _mensajes.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+                      _scrollToBottom();
                     }
 
                     return _mensajes.isEmpty
@@ -263,19 +239,16 @@ class _ChatMensajesScreenState extends State<ChatMensajesScreen> {
                     )
                         : ListView.builder(
                       controller: _scrollController,
-                      reverse: true,
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       itemCount: _mensajes.length,
                       itemBuilder: (context, index) {
-                        final mensaje = _mensajes[_mensajes.length - 1 - index];
+                        final mensaje = _mensajes[index];
                         return _buildMensaje(mensaje);
                       },
                     );
                   },
                 ),
               ),
-
-              // Barra de envío
               Padding(
                 padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
                 child: Row(
