@@ -15,7 +15,7 @@ class CustomSnackBar {
       SnackBar(
         content: Text(
           message,
-          style: const TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.black),
         ),
         backgroundColor: backgroundColor ?? Colors.red.shade700,
         duration: duration,

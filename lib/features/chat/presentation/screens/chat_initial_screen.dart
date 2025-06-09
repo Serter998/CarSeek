@@ -1,3 +1,4 @@
+import 'package:car_seek/core/constants/app_colors.dart';
 import 'package:car_seek/core/widgets/custom_snack_bar.dart';
 import 'package:car_seek/features/chat/presentation/blocs/chat_bloc.dart';
 import 'package:car_seek/share/domain/entities/conversacion.dart';
@@ -59,7 +60,7 @@ class _ChatInitialScreenState extends State<ChatInitialScreen> {
       CustomSnackBar.show(
         context: context,
         message: "Chat borrado con éxito.",
-        backgroundColor: Colors.white10,
+        backgroundColor: AppColors.primary,
       );
     });
   }

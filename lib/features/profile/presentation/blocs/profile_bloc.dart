@@ -1,3 +1,4 @@
+import 'package:car_seek/core/errors/auth_failure.dart';
 import 'package:car_seek/core/errors/failure.dart';
 import 'package:car_seek/core/errors/server_failure.dart';
 import 'package:car_seek/share/domain/entities/usuario.dart';
@@ -55,11 +56,20 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     on<OnLoadInitialProfileEvent>((event, emit) async {
       final resp = await _getCurrentUsuarioUseCase();
+      await Future.delayed(Duration(milliseconds: 200));
+
       resp.fold(
-        (f) => emit(ProfileError(failure: f)),
-        (usuario) => emit(ProfileInitial(usuario: usuario)),
+            (f) {
+          if (f is UserNotFoundFailure) {
+            emit(ProfileCerrarSesionSuccess());
+          } else {
+            emit(ProfileError(failure: f));
+          }
+        },
+            (usuario) => emit(ProfileInitial(usuario: usuario)),
       );
     });
+
 
     on<OnCerrarSesionEvent>((event, emit) async {
       emit(ProfileLoading());

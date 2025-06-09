@@ -50,13 +50,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       resp.fold(
             (_) => emit(AuthInitial()),
-            (credentials) => emit(
-          AuthInitial(
-            savedEmail: credentials['email'],
-            savedPassword: credentials['password'],
-            hasSavedCredentials: credentials['email'] != null,
-          ),
-        ),
+            (credentials) {
+          final hasSaved = credentials['rememberMe'] == 'true' &&
+              credentials['email'] != null &&
+              credentials['password'] != null;
+
+          if (hasSaved) {
+            add(OnLoginEvent(
+              email: credentials['email']!,
+              password: credentials['password']!,
+              rememberMe: true,
+            ));
+          } else {
+            emit(AuthInitial(
+              savedEmail: credentials['email'],
+              savedPassword: credentials['password'],
+              hasSavedCredentials: false,
+            ));
+          }
+        },
       );
     });
 

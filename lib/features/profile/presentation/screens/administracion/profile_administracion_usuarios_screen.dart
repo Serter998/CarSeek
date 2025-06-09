@@ -1,3 +1,4 @@
+import 'package:car_seek/core/constants/app_colors.dart';
 import 'package:car_seek/core/widgets/custom_snack_bar.dart';
 import 'package:car_seek/features/profile/presentation/blocs/profile_bloc.dart';
 import 'package:car_seek/features/profile/presentation/widgets/usuario_card.dart';
@@ -99,7 +100,7 @@ class _ProfileAdministracionUsuariosScreenState
             CustomSnackBar.show(
               context: context,
               message: "Tipo de usuario actualizado a ${nuevoTipo.nombre}.",
-              backgroundColor: Colors.white10,
+              backgroundColor: AppColors.primary,
             );
           });
 
@@ -115,7 +116,7 @@ class _ProfileAdministracionUsuariosScreenState
           CustomSnackBar.show(
             context: context,
             message: "Usuario borrado con éxito.",
-            backgroundColor: Colors.white10,
+            backgroundColor: AppColors.primary,
           );
         },
       ),

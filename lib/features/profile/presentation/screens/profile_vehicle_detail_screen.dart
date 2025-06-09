@@ -1,3 +1,4 @@
+import 'package:car_seek/core/constants/app_colors.dart';
 import 'package:car_seek/core/widgets/custom_snack_bar.dart';
 import 'package:car_seek/features/profile/presentation/blocs/profile_bloc.dart';
 import 'package:flutter/material.dart';
@@ -374,7 +375,7 @@ class _ProfileVehicleDetailScreenState
           CustomSnackBar.show(
             context: context,
             message: "Cambios guardados con éxito.",
-            backgroundColor: Colors.white10,
+            backgroundColor: AppColors.primary,
           );
         } else {
           CustomSnackBar.showWarning(

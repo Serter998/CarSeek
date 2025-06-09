@@ -128,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: const Text(
                                   "¿Olvidaste tu contraseña?",
                                   maxLines: 2,
-                                  overflow: TextOverflow.ellipsis, // mejor para evitar overflow
+                                  overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.right,
                                 ),
                               ),
