@@ -15,14 +15,14 @@ class AuthScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final authBloc = context.read<AuthBloc>();
 
-      // Primero carga las credenciales
       authBloc.add(OnLoadCredentialsEvent());
 
-      // Espera un pequeño delay para que se cargue antes de verificar el usuario
       await Future.delayed(const Duration(milliseconds: 200));
 
-      // Luego verifica si el usuario está logueado
-      authBloc.add(OnCheckUserLoginEvent());
+      final state = authBloc.state;
+      if (state is AuthInitial && state.hasSavedCredentials) {
+        authBloc.add(OnCheckUserLoginEvent());
+      }
     });
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -62,7 +62,7 @@ class AuthScreen extends StatelessWidget {
               return LoginScreen(
                 initialEmail: savedEmail,
                 initialPassword: savedPassword,
-                rememberMe: savedEmail != null,
+                rememberMe: (state as AuthInitial).hasSavedCredentials,
               );
             case AuthRegister:
               return RegisterScreen();

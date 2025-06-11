@@ -46,9 +46,11 @@ class AuthSourceImpl implements AuthSource {
     if (rememberMe) {
       await _storage.write(key: 'remembered_email', value: email);
       await _storage.write(key: 'remembered_password', value: password);
+      await _storage.write(key: 'remember_me', value: 'true');
     } else {
       await _storage.delete(key: 'remembered_email');
       await _storage.delete(key: 'remembered_password');
+      await _storage.delete(key: 'remember_me');
     }
     return response;
   }
@@ -57,9 +59,12 @@ class AuthSourceImpl implements AuthSource {
   Future<Map<String, String?>> loadCredentials() async {
     final rememberedEmail = await _storage.read(key: 'remembered_email');
     final rememberedPassword = await _storage.read(key: 'remembered_password');
+    final rememberMe = await _storage.read(key: 'remember_me');
+
     return {
       'email': rememberedEmail,
       'password': rememberedPassword,
+      'rememberMe': rememberMe,
     };
   }
 

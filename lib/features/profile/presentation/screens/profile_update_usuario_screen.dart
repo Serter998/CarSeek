@@ -1,3 +1,4 @@
+import 'package:car_seek/core/constants/app_colors.dart';
 import 'package:car_seek/core/services/validation_service.dart';
 import 'package:car_seek/core/widgets/custom_snack_bar.dart';
 import 'package:car_seek/features/profile/presentation/blocs/profile_bloc.dart';
@@ -166,7 +167,7 @@ class _UsuarioFormScreenState extends State<ProfileUpdateUsuarioScreen> {
         CustomSnackBar.show(
           context: context,
           message: "Perfil actualizado con éxito.",
-          backgroundColor: Colors.white10,
+          backgroundColor: AppColors.primary,
         );
       }
     } else {

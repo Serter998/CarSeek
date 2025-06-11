@@ -7,7 +7,7 @@ class AuthSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      NavigationService.navigateTo(context, "/main");
+      Navigator.of(context).pushNamedAndRemoveUntil("/main", (route) => false);
     });
     return SafeArea(
       child: SingleChildScrollView(

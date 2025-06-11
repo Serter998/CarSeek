@@ -1,3 +1,4 @@
+import 'package:car_seek/core/constants/app_colors.dart';
 import 'package:car_seek/core/services/navigation_service.dart';
 import 'package:car_seek/core/widgets/custom_snack_bar.dart';
 import 'package:car_seek/features/auth/presentation/blocs/auth_bloc.dart';
@@ -14,7 +15,7 @@ class ProfileCerrarSesionSuccessScreen extends StatelessWidget {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       context.read<ProfileBloc>().add(OnNavigateToInitial());
       context.read<AuthBloc>().add(OnNavigateToLoginEvent());
-      CustomSnackBar.show(context: context, message: mensaje, backgroundColor: Colors.white24);
+      CustomSnackBar.show(context: context, message: mensaje, backgroundColor: AppColors.primary);
       await NavigationService.navigateToAndRemoveUntil(context, "/");
     });
     return SafeArea(
