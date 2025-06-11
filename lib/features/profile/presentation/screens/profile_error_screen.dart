@@ -56,14 +56,14 @@ class ProfileErrorScreen extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 18.0),
               child: Icon(_getErrorIcon(), color: Colors.red, size: 100),
             ),
-            Text(failure.defaultMessage, style: TextStyles.errorText),
+            Text(failure.message, style: TextStyles.errorText),
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
               child: RedirectTextButton(
                 function: () {
                   context.read<ProfileBloc>().add(OnNavigateToInitial());
                 },
-                text: "Volver a hacer la venta",
+                text: "Volver",
               ),
             ),
           ],

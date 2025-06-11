@@ -31,8 +31,10 @@ class UsuarioSourceImpl implements UsuarioSource {
 
     // Elimina datos relacionados
     await supabaseClient.from('vehiculos').delete().eq('id_usuario', id);
-    await supabaseClient.from('mensajes').delete().eq('id_remitente', id);
-    await supabaseClient.from('valoraciones').delete().eq('id_usuario_que_valora', id);
+    await supabaseClient.from('mensajes').delete().eq('sender_id', id);
+    await supabaseClient.from('conversaciones').delete().eq('usuario1', id);
+    await supabaseClient.from('conversaciones').delete().eq('usuario2', id);
+    await supabaseClient.from('favoritos').delete().eq('id_usuario', id);
     await supabaseClient.from('usuarios').delete().eq('id_usuario', id);
 
     // Llama a la función de borde
@@ -45,12 +47,12 @@ class UsuarioSourceImpl implements UsuarioSource {
       body: {'user_id': id},
     );
 
-    // Cierra sesión después de eliminar
-    await supabaseClient.auth.signOut();
-
     if (response.status != 200) {
       throw Exception('Error al eliminar el usuario: ${response.data}');
     }
+
+    // Cierra sesión después de eliminar
+    await supabaseClient.auth.signOut();
   }
 
   @override
@@ -63,8 +65,10 @@ class UsuarioSourceImpl implements UsuarioSource {
 
     // Elimina datos relacionados
     await supabaseClient.from('vehiculos').delete().eq('id_usuario', id);
-    await supabaseClient.from('mensajes').delete().eq('id_remitente', id);
-    await supabaseClient.from('valoraciones').delete().eq('id_usuario_que_valora', id);
+    await supabaseClient.from('mensajes').delete().eq('sender_id', id);
+    await supabaseClient.from('conversaciones').delete().eq('usuario1', id);
+    await supabaseClient.from('conversaciones').delete().eq('usuario2', id);
+    await supabaseClient.from('favoritos').delete().eq('id_usuario', id);
     await supabaseClient.from('usuarios').delete().eq('id_usuario', id);
 
     // Llama a la función de borde

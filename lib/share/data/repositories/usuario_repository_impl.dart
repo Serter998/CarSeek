@@ -47,7 +47,7 @@ class UsuarioRepositoryImpl implements UsuarioRepository {
         TimeoutFailure(errorCode: 'user_fetch_timeout', statusCode: 408),
       );
     } catch (e) {
-      return Left(ServerFailure(errorCode: 'unknown_error', statusCode: 500));
+      return Left(ServerFailure(errorCode: 'unknown_error', customMessage: e.toString(), statusCode: 500));
     }
   }
 

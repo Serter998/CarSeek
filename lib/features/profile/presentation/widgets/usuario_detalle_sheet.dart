@@ -54,23 +54,25 @@ class _UsuarioDetalleSheetState extends State<UsuarioDetalleSheet> {
 
             return AlertDialog(
               title: const Text('Confirmar eliminación'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('Para eliminar este usuario, escribe "confirmar" abajo.'),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: controller,
-                    onChanged: (value) {
-                      setDialogState(() {
-                        textoIngresado = value;
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      hintText: 'Escribe "confirmar"',
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('Para eliminar este usuario, escribe "confirmar" abajo.'),
+                    const SizedBox(height: 12),
+                    TextField(
+                      controller: controller,
+                      onChanged: (value) {
+                        setDialogState(() {
+                          textoIngresado = value;
+                        });
+                      },
+                      decoration: const InputDecoration(
+                        hintText: 'Escribe "confirmar"',
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               actions: [
                 TextButton(
