@@ -19,6 +19,9 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     final chatBloc = context.read<ChatBloc>();
     final state = context.read<ChatBloc>().state;
+    if (state is! ChatInitial) {
+      context.read<ChatBloc>().add(OnLoadInitialChatsEvent());
+    }
 
     if (widget.conversacion != null) {
       Future.delayed(const Duration(milliseconds: 0), () {

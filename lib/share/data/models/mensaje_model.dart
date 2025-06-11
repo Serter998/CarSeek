@@ -11,31 +11,22 @@ class MensajeModel extends Mensaje {
 
   factory MensajeModel.fromJson(Map<String, dynamic> json) {
     return MensajeModel(
-      id: json['id'],
-      conversacionId: json['conversacion_id'],
-      senderId: json['sender_id'],
-      context: json['context'],
-      createdAt: DateTime.parse(json['created_at']).toLocal(),
+      id: json['id'] as String,
+      senderId: json['sender_id'] as String,
+      conversacionId: json['conversacion_id'] as String,
+      context: json['context'] as String,
+      createdAt: DateTime.parse(json['created_at']),
     );
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {
+    final data = {
       'conversacion_id': conversacionId,
       'sender_id': senderId,
       'context': context,
     };
-
-    // Solo incluir la ID si no es nula
-    if (id != null) {
-      data['id'] = id;
-    }
-
-    // Incluir createdAt si no es nulo (opcional)
-    if (createdAt != null) {
-      data['created_at'] = createdAt!.toUtc().toIso8601String();
-    }
-
+    if (id != null) data['id'] = id!;
+    if (createdAt != null) data['created_at'] = createdAt!.toUtc().toIso8601String();
     return data;
   }
 
