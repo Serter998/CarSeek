@@ -2,13 +2,19 @@ name: car_seek
 description: "TFG hecho por Raúl Sánchez y Sergio Rasillo."
 publish_to: 'none'
 version: 0.1.0
-
 environment:
   sdk: ^3.7.2
 
 dependencies:
   flutter:
     sdk: flutter
+
+  provider: ^6.1.4
+  get_it: ^8.0.3
+  intl: ^0.20.2
+  uuid: ^4.5.1
+  #Programación funcional
+  dartz: ^0.10.1
   # 🔗 Conexión con Supabase (Base de Datos y Autenticación)
   supabase_flutter: ^2.8.4  # Cliente de Supabase para Flutter
 
@@ -19,17 +25,20 @@ dependencies:
   shared_preferences: ^2.2.2  # Guardar sesión localmente
   flutter_secure_storage: ^9.0.0  # Almacenar datos sensibles
   crypto: ^3.0.6 #Cifrar datos
+  flutter_dotenv: ^5.0.2
+  lucide_icons: ^0.257.0
+  collection: ^1.19.1
 
   # 📍 Mapas y Ubicación
   google_maps_flutter: ^2.5.0  # Google Maps para mostrar vehículos
   geolocator: ^10.1.0  # Obtener ubicación del usuario
 
   # 📦 Almacenamiento de Imágenes en Supabase
-  image_picker: ^1.0.7  # Seleccionar imágenes desde galería o cámara
+  image_picker: ^1.1.2  # Seleccionar imágenes desde galería o cámara
+  mime: ^2.0.0
   dio: ^5.4.1  # Manejar peticiones HTTP para subir imágenes
 
   # 📩 Chat en tiempo real (Usando Supabase Realtime)
-  supabase_realtime: ^1.0.2  # Escuchar eventos en tiempo real (chat, notificaciones)
 
   # 💳 Pagos en la app
   flutter_stripe: ^9.4.0  # Integrar pagos con Stripe
@@ -37,6 +46,7 @@ dependencies:
   # 🎨 UI y Animaciones
   lottie: ^2.7.0  # Animaciones
   cached_network_image: ^3.3.1  # Cargar imágenes con caché
+  visibility_detector: ^0.4.0+2
 
   # 🐞 Debugging
   fluttertoast: ^8.2.5  # Mostrar mensajes en pantalla
@@ -48,3 +58,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - .env
+    - assets/images/CarSeekSinFondo.png
+    - assets/images/VentaVehiculo.png
+    - assets/images/logosinnombre.png
